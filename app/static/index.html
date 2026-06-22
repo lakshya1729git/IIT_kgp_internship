@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kolkata Traffic AI</title>
+  <!-- Inline SVG favicon — suppresses 404s for favicon.ico and apple-touch-icon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="/static/styles.css?v=6" />
+  <link rel="stylesheet" href="/static/styles.css?v=7" />
 </head>
 <body>
 
@@ -26,10 +29,12 @@
           <button class="mode-tab active" data-mode="drive"       onclick="setMode('drive')"       title="Drive">Drive</button>
           <button class="mode-tab"        data-mode="walk"        onclick="setMode('walk')"        title="Walk">Walk</button>
           <button class="mode-tab"        data-mode="bike"        onclick="setMode('bike')"        title="Bike">Bike</button>
+          <button class="mode-tab"        data-mode="bus"         onclick="setMode('bus')"         title="Bus">Bus</button>
           <button class="mode-tab"        data-mode="metro"       onclick="setMode('metro')"       title="Metro">Metro</button>
           <button class="mode-tab"        data-mode="metro+walk"  onclick="setMode('metro+walk')"  title="Metro + Walk">W+M</button>
           <button class="mode-tab"        data-mode="metro+bike"  onclick="setMode('metro+bike')"  title="Metro + Bike">M+B</button>
           <button class="mode-tab"        data-mode="metro+drive" onclick="setMode('metro+drive')" title="Metro + Drive">M+D</button>
+          <button class="mode-tab"        data-mode="metro+walk+drive" onclick="setMode('metro+walk+drive')" title="Walk to Metro · Cab from Metro">W+M+C</button>
         </div>
 
         <!-- Source -->
@@ -85,11 +90,21 @@
     <div class="legend-row"><div class="legend-dot" style="background:#555;border:2px solid #fff;box-shadow:0 0 0 1px #555"></div> Station</div>
   </div>
 
+  <!-- Bus legend — bottom left, shown only when bus mode active -->
+  <div class="map-legend" id="bus-legend" style="display:none">
+    <div class="legend-title">Bus Routes</div>
+    <div class="legend-row"><div class="legend-line" style="background:#1a73e8"></div> AC Bus</div>
+    <div class="legend-row"><div class="legend-line" style="background:#34a853"></div> Government</div>
+    <div class="legend-row"><div class="legend-line" style="background:#FF5722"></div> Non-AC</div>
+    <div class="legend-row"><div class="legend-line" style="background:#9c27b0"></div> Mini Bus</div>
+    <div class="legend-row"><div class="legend-dot" style="background:#FF5722;border:2px solid #fff"></div> Bus Stop</div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="/static/scripts.js?v=5"></script>
+  <script src="/static/scripts.js?v=7"></script>
 
 </body>
 </html>

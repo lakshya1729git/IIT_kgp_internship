@@ -16,15 +16,14 @@ OPENROUTER_API_KEY  = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Free models — swap via .env for speed vs quality tradeoff:
-#   openai/gpt-oss-20b:free                  ← RELIABLE JSON, good structured output (default)
-#   meta-llama/llama-3.3-70b-instruct:free   ← best quality when not rate-limited
-#   openai/gpt-oss-120b:free                 ← larger, higher quality
-#   nvidia/nemotron-3-super-120b-a12b:free   ← 120B, highest quality but slowest
+#   meta-llama/llama-3.3-70b-instruct:free   ← best quality, direct JSON (recommended)
 #   qwen/qwen3-coder:free                    ← good at structured output
-# NOTE: deepseek/deepseek-v4-flash:free was removed from OpenRouter (404)
+#   openai/gpt-oss-20b:free                  ← reasoning model, needs max_tokens≥1024
+#   openai/gpt-oss-120b:free                 ← larger reasoning model
+#   nvidia/nemotron-3-super-120b-a12b:free   ← 120B, highest quality but slowest
 OPENROUTER_MODEL = os.getenv(
     "OPENROUTER_MODEL",
-    "openai/gpt-oss-20b:free"   # reliable JSON structured output
+    "meta-llama/llama-3.3-70b-instruct:free"   # direct JSON, no reasoning overhead
 )
 
 # Gemini — fallback if OpenRouter key not set

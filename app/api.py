@@ -22,7 +22,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(__file__))
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -157,7 +157,7 @@ KOLKATA_LOCATIONS = [
 class RouteRequest(BaseModel):
     source:      str
     destination: str
-    mode:        str = "drive"   # drive | walk | bike | metro
+    mode:        str = "drive"   # drive | walk | bike | metro | bus
     modes:       list[str] | None = None  # ['metro','walk'] or ['metro','bike']
 
 
@@ -836,22 +836,34 @@ def _score_route(route_data: dict, events: list[dict],
 
 def _pick_best_route(scored: list[dict]) -> int:
     """
-    Best route = lowest composite: travel_time × (1 + risk_score / MAX_RISK).
+    Best route = lowest composite: effective_time × (1 + risk_score / MAX_RISK).
+
+    effective_time = travel_time_min + metro_wait_min
+      Metro wait (time until the next train departs) is extracted from the first
+      metro segment's next_train.minutes_away field. A route with a 12-min wait
+      should not beat a route with a 1-min wait just because its in-motion time
+      happens to look identical after integer rounding.
 
     Calibration (MAX_RISK = 20):
       risk=0  (CLEAR)    → 1.0×  — pure travel time, no penalty
       risk=5  (MODERATE) → 1.25× — 25% time penalty; still beats a 30% longer clear route
       risk=12 (HIGH)     → 1.6×  — a 10-min route now costs 16 min equivalent
       risk=25 (CRITICAL) → 2.25× — overrides up to ~55% time savings on safer route
-
-    Using MAX_RISK=10 underpenalises HIGH/CRITICAL routes (they were only 2–3×
-    multiplied), so a moderately faster critical route could still win. With 20,
-    severe disruptions reliably push the user toward the safer alternative.
     """
     MAX_RISK = 20.0
 
+    def _metro_wait_min(r: dict) -> float:
+        """Return the wait time (minutes) for the first metro segment, or 0."""
+        for seg in r.get("segments") or []:
+            if seg.get("type") == "metro":
+                nt = seg.get("next_train")
+                if nt and isinstance(nt.get("minutes_away"), (int, float)):
+                    return float(nt["minutes_away"])
+        return 0.0
+
     def composite(r: dict) -> float:
-        return r["travel_time_min"] * (1.0 + r["risk_score"] / MAX_RISK)
+        effective_time = r["travel_time_min"] + _metro_wait_min(r)
+        return effective_time * (1.0 + r["risk_score"] / MAX_RISK)
 
     return min(range(len(scored)), key=lambda i: composite(scored[i]))
 
@@ -867,6 +879,7 @@ async def startup():
 @app.get("/api/locations")
 def get_locations():
     from routing.metro_timetable import ALL_LINES
+    from transit.bus_graph import load_stops as _load_bus_stops
 
     # Collect all unique metro station names, preserving display order:
     # Blue → Green → Purple → Orange → Yellow
@@ -887,9 +900,26 @@ def get_locations():
                 })
                 _id += 1
 
+    # Bus stops — flat list sorted by name for the dropdown
+    bus_stops = []
+    try:
+        raw_stops = _load_bus_stops()
+        for stop_id, info in sorted(raw_stops.items(), key=lambda x: x[1]["name"]):
+            bus_stops.append({
+                "id":      stop_id,
+                "name":    info["name"],
+                "desc":    "Bus stop",
+                "type":    "bus",
+                "lat":     info["lat"],
+                "lon":     info["lon"],
+            })
+    except Exception as _e:
+        print(f"[API] Could not load bus stops: {_e}")
+
     return {
-        "locations": KOLKATA_LOCATIONS,
+        "locations":      KOLKATA_LOCATIONS,
         "metro_stations": metro_locations,
+        "bus_stops":      bus_stops,
     }
 
 
@@ -897,6 +927,96 @@ def get_locations():
 def metro_overlay():
     """GeoJSON overlay of all Kolkata Metro lines + stations for map display."""
     return get_metro_geojson_overlay()
+
+
+@app.get("/api/bus-overlay")
+def bus_overlay():
+    """
+    GeoJSON FeatureCollection of all Kolkata bus stops for optional map display.
+    Each stop is a Point feature with {stop_id, name} properties.
+    """
+    from transit.bus_graph import load_stops as _load_bus_stops
+    try:
+        stops = _load_bus_stops()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bus stop data unavailable: {e}")
+
+    features = []
+    for stop_id, info in stops.items():
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [info["lon"], info["lat"]],
+            },
+            "properties": {
+                "stop_id": stop_id,
+                "name":    info["name"],
+            },
+        })
+    return {"type": "FeatureCollection", "features": features}
+
+
+@app.get("/api/bus-network")
+def bus_network():
+    """
+    Returns the full Kolkata bus network for map overlay and panel display.
+
+    Response:
+      routes: [{route_id, route_name, route_type, stops: [{stop_id, name, lat, lon}], coords: [[lon,lat],...]}]
+      stops:  [{stop_id, name, lat, lon}]   -- deduplicated flat list of all stops
+    """
+    from transit.bus_graph import (
+        load_stops as _load_bus_stops,
+        load_routes as _load_bus_routes,
+        load_route_sequences as _load_seqs,
+    )
+    try:
+        stops_map = _load_bus_stops()
+        routes_map = _load_bus_routes()
+        sequences = _load_seqs()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bus data unavailable: {e}")
+
+    routes_out = []
+    for route_id, stop_seq in sequences.items():
+        stop_seq_sorted = sorted(stop_seq, key=lambda x: x[0])
+        stop_list = []
+        coords    = []
+        for _, sid in stop_seq_sorted:
+            if sid not in stops_map:
+                continue
+            info = stops_map[sid]
+            stop_list.append({"stop_id": sid, "name": info["name"],
+                               "lat": info["lat"], "lon": info["lon"]})
+            coords.append([info["lon"], info["lat"]])
+        if not stop_list:
+            continue
+        meta = routes_map.get(route_id, {})
+        routes_out.append({
+            "route_id":   route_id,
+            "route_name": meta.get("route_name", route_id),
+            "route_type": meta.get("route_type", ""),
+            "stops":      stop_list,
+            "coords":     coords,
+            "num_stops":  len(stop_list),
+        })
+
+    # Sort: AC first, then Government, then others
+    TYPE_ORDER = {"AC": 0, "Government": 1, "Non-AC": 2, "Mini": 3}
+    routes_out.sort(key=lambda r: (TYPE_ORDER.get(r["route_type"], 9), r["route_name"]))
+
+    # Flat deduplicated stop list
+    seen_stops: set[str] = set()
+    flat_stops = []
+    for sid, info in stops_map.items():
+        if sid not in seen_stops:
+            seen_stops.add(sid)
+            flat_stops.append({"stop_id": sid, "name": info["name"],
+                                "lat": info["lat"], "lon": info["lon"]})
+    flat_stops.sort(key=lambda s: s["name"])
+
+    return {"routes": routes_out, "stops": flat_stops}
 
 
 @app.get("/api/hgnn-status")
@@ -1022,9 +1142,11 @@ def compute_routes_only(req: RouteRequest):
         "walk":  "#34a853",
         "bike":  "#fbbc04",
         "metro": "#9c27b0",
-        "metro+walk":  "#9c27b0",
-        "metro+bike":  "#9c27b0",
-        "metro+drive": "#9c27b0",
+        "metro+walk":       "#9c27b0",
+        "metro+bike":       "#9c27b0",
+        "metro+drive":      "#9c27b0",
+        "metro+walk+drive": "#9c27b0",
+        "bus":   "#FF5722",
     }
     base_color = MODE_COLOR.get(mode, "#1a73e8")
 
@@ -1036,6 +1158,18 @@ def compute_routes_only(req: RouteRequest):
         r["event_count"]    = 0
         r["is_best"]        = False
         r.setdefault("mode", mode)
+        # Strip any segments that have no metro leg in a metro+walk result
+        # (guards against plain-walk routes leaking into the metro+walk section)
+        if "metro" in mode and r.get("segments"):
+            has_metro_seg = any(s.get("type") == "metro" for s in r["segments"])
+            if not has_metro_seg:
+                r["_no_metro_leg"] = True
+
+    # Filter out walk-only routes that leaked into a metro+walk result
+    if "metro" in mode:
+        result["routes"] = [
+            r for r in result["routes"] if not r.get("_no_metro_leg")
+        ]
 
     if result["routes"]:
         result["routes"][0]["is_best"] = True
@@ -1051,6 +1185,8 @@ def compute_routes_only(req: RouteRequest):
         "best_route_id":      result["routes"][0]["id"] if result["routes"] else None,
         "generated_at":       now_iso(),
         "mode":               mode,
+        "metro_note":         result.get("metro_note"),   # surfaced when no metro routes found
+        "bus_note":           result.get("bus_note"),     # surfaced when no direct bus route found
     }
 
 
@@ -1156,7 +1292,7 @@ def fetch_disruptions(req: DisruptionRequest):
     # Now that we have extracted events, re-run the metro routing with full
     # disruption context so blocked stations and path scores use real data.
     req_mode = req.mode or "drive"
-    is_metro_mode = req_mode in ("metro", "metro+walk", "metro+bike", "metro+drive")
+    is_metro_mode = req_mode in ("metro", "metro+walk", "metro+bike", "metro+drive", "metro+walk+drive")
     if is_metro_mode and events:
         try:
             print(f"  [API] Re-routing {req_mode} with {len(events)} disruption events for context")
@@ -1224,6 +1360,20 @@ def fetch_disruptions(req: DisruptionRequest):
 
 
 # ── Serve frontend ─────────────────────────────────────────────────────────────
+
+# Suppress browser auto-requests for favicon/apple-touch-icon
+_FAVICON_SVG = (
+    b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+    b'<text y=".9em" font-size="90">\xf0\x9f\x9a\xa6</text></svg>'  # 🚦
+)
+
+@app.get("/favicon.ico", include_in_schema=False)
+@app.get("/apple-touch-icon.png", include_in_schema=False)
+@app.get("/apple-touch-icon-precomposed.png", include_in_schema=False)
+def favicon():
+    return Response(content=_FAVICON_SVG, media_type="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=86400"})
+
 
 @app.get("/", response_class=HTMLResponse)
 def frontend():
