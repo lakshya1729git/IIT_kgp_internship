@@ -1,93 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kolkata Traffic AI</title>
   <!-- Inline SVG favicon — suppresses 404s for favicon.ico and apple-touch-icon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="/static/styles.css?v=7" />
+  <link rel="stylesheet" href="/static/styles.css?v=10" />
 </head>
 <body>
 
-  <!-- ── Full-screen map ───────────────────────── -->
+  <!-- ── Full-screen map base layer ──────────────────────────────────────── -->
   <div id="map"></div>
 
-  <!-- ── Floating UI layer ─────────────────────── -->
+  <!-- ── Floating UI shell (pointer-events: none → children opt-in) ──────── -->
   <div class="body">
 
-    <!-- Search card — top-left -->
+    <!-- ── Search card — top-left ───────────────────────────────────────── -->
     <div class="topbar">
-      <div class="logo">Kolkata <span class="logo-dot">Traffic</span> AI</div>
+
+      <div class="logo">Kolkata Traffic<span class="logo-dot"> AI</span></div>
 
       <div class="inputs-wrap">
 
-        <!-- Mode tabs -->
-        <div class="mode-tabs">
-          <button class="mode-tab active" data-mode="drive"       onclick="setMode('drive')"       title="Drive">Drive</button>
-          <button class="mode-tab"        data-mode="walk"        onclick="setMode('walk')"        title="Walk">Walk</button>
-          <button class="mode-tab"        data-mode="bike"        onclick="setMode('bike')"        title="Bike">Bike</button>
-          <button class="mode-tab"        data-mode="bus"         onclick="setMode('bus')"         title="Bus">Bus</button>
-          <button class="mode-tab"        data-mode="metro"       onclick="setMode('metro')"       title="Metro">Metro</button>
-          <button class="mode-tab"        data-mode="metro+walk"  onclick="setMode('metro+walk')"  title="Metro + Walk">W+M</button>
-          <button class="mode-tab"        data-mode="metro+bike"  onclick="setMode('metro+bike')"  title="Metro + Bike">M+B</button>
-          <button class="mode-tab"        data-mode="metro+drive" onclick="setMode('metro+drive')" title="Metro + Drive">M+D</button>
-          <button class="mode-tab"        data-mode="metro+walk+drive" onclick="setMode('metro+walk+drive')" title="Walk to Metro · Cab from Metro">W+M+C</button>
+        <!-- Mode chips — multi-select toggles -->
+        <div class="mode-chips" id="mode-chips">
+          <button class="mode-chip active" data-mode="drive" onclick="toggleMode('drive')" title="Drive">🚗 Drive</button>
+          <button class="mode-chip"        data-mode="walk"  onclick="toggleMode('walk')"  title="Walk">🚶 Walk</button>
+          <button class="mode-chip"        data-mode="bike"  onclick="toggleMode('bike')"  title="Bike">🚲 Bike</button>
+          <button class="mode-chip"        data-mode="metro" onclick="toggleMode('metro')" title="Metro">🚇 Metro</button>
+          <button class="mode-chip"        data-mode="bus"   onclick="toggleMode('bus')"   title="Bus">🚌 Bus</button>
         </div>
+        <!-- Active mode label -->
+        <div class="mode-hint" id="mode-hint">Mode: Drive</div>
 
-        <!-- Source -->
-        <div class="input-group" id="src-wrap">
-          <span class="dot dot-src"></span>
-          <input type="text" id="src-input" class="loc-input" placeholder="Source" autocomplete="off"
-                 oninput="filterDropdown('src')" onfocus="openDropdown('src')" onblur="closeDropdown('src', 200)">
-          <div class="loc-dropdown" id="src-dropdown"></div>
+        <!-- Source input -->
+        <div class="input-group">
+          <div class="dot dot-src"></div>
+          <input
+            id="src-input"
+            class="loc-input"
+            type="text"
+            placeholder="Source location or station"
+            autocomplete="off"
+            onfocus="openDropdown('src')"
+            onblur="closeDropdown('src', 150)"
+            oninput="filterDropdown('src')"
+          />
         </div>
+        <!-- Fixed dropdown for source (rendered outside input-group so it overflows) -->
+        <div id="src-dropdown" class="loc-dropdown"></div>
 
-        <!-- Swap -->
-        <div class="swap-icon" onclick="swapLocations()">⇅</div>
+        <!-- Swap button -->
+        <div class="swap-icon" onclick="swapLocations()" title="Swap">⇅</div>
 
-        <!-- Destination -->
-        <div class="input-group" id="dst-wrap">
-          <span class="dot dot-dst"></span>
-          <input type="text" id="dst-input" class="loc-input" placeholder="Destination" autocomplete="off"
-                 oninput="filterDropdown('dst')" onfocus="openDropdown('dst')" onblur="closeDropdown('dst', 200)">
-          <div class="loc-dropdown" id="dst-dropdown"></div>
+        <!-- Destination input -->
+        <div class="input-group">
+          <div class="dot dot-dst"></div>
+          <input
+            id="dst-input"
+            class="loc-input"
+            type="text"
+            placeholder="Destination location or station"
+            autocomplete="off"
+            onfocus="openDropdown('dst')"
+            onblur="closeDropdown('dst', 150)"
+            oninput="filterDropdown('dst')"
+          />
         </div>
+        <!-- Fixed dropdown for destination -->
+        <div id="dst-dropdown" class="loc-dropdown"></div>
 
-        <button class="btn-go" id="btn-go" onclick="go()">Get Routes</button>
-
+        <!-- Go button -->
+        <button id="btn-go" class="btn-go" onclick="go()">Get Routes</button>
       </div>
+
     </div><!-- /.topbar -->
 
-    <!-- Route panel — right side, full height -->
+    <!-- ── Route panel — right side ─────────────────────────────────────── -->
     <div class="panel">
       <div class="panel-inner" id="panel">
         <div class="empty-state">
           <div class="icon">🗺️</div>
-          <p>Choose your start and end points.<br>AI traffic routes appear here.</p>
+          <p>Select source and destination,<br>then press <strong>Get Routes</strong>.</p>
         </div>
       </div>
-    </div>
+    </div><!-- /.panel -->
 
   </div><!-- /.body -->
 
-  <!-- Status bar — bottom centre -->
-  <div class="statusbar">
-    <div id="status-l">Ready</div>
-    <div>Kolkata Traffic AI</div>
-  </div>
-
-  <!-- Metro legend — bottom left -->
-  <div class="map-legend" id="map-legend">
+  <!-- ── Metro line legend — bottom-left (hidden until metro mode) ────────── -->
+  <div id="map-legend" class="map-legend">
     <div class="legend-title">Metro Lines</div>
-    <div class="legend-row"><div class="legend-line" style="background:#2196F3"></div> Blue (N-S)</div>
-    <div class="legend-row"><div class="legend-line" style="background:#4CAF50"></div> Green (E-W)</div>
-    <div class="legend-row"><div class="legend-line" style="background:#9C27B0"></div> Purple (Joka)</div>
-    <div class="legend-row"><div class="legend-line" style="background:#FF9800"></div> Orange</div>
-    <div class="legend-row"><div class="legend-line" style="background:#FFC107"></div> Yellow (Airport)</div>
-    <div class="legend-row"><div class="legend-dot" style="background:#555;border:2px solid #fff;box-shadow:0 0 0 1px #555"></div> Station</div>
+    <div class="legend-row">
+      <div class="legend-line" style="background:#2196F3"></div>
+      <span>Blue — North–South</span>
+    </div>
+    <div class="legend-row">
+      <div class="legend-line" style="background:#4CAF50"></div>
+      <span>Green — East–West</span>
+    </div>
+    <div class="legend-row">
+      <div class="legend-line" style="background:#9C27B0"></div>
+      <span>Purple — Joka–Majerhat</span>
+    </div>
+    <div class="legend-row">
+      <div class="legend-line" style="background:#FF9800"></div>
+      <span>Orange — Kavi S.–Beleghata</span>
+    </div>
+    <div class="legend-row">
+      <div class="legend-line" style="background:#FFC107"></div>
+      <span>Yellow — Noapara–Jai Hind</span>
+    </div>
   </div>
 
   <!-- Bus legend — bottom left, shown only when bus mode active -->
@@ -100,11 +126,16 @@
     <div class="legend-row"><div class="legend-dot" style="background:#FF5722;border:2px solid #fff"></div> Bus Stop</div>
   </div>
 
+  <!-- ── Status bar — bottom-centre ───────────────────────────────────────── -->
+  <div class="statusbar">
+    <span id="status-l">Kolkata Traffic AI — ready</span>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="/static/scripts.js?v=7"></script>
+  <script src="/static/scripts.js?v=10"></script>
 
 </body>
 </html>

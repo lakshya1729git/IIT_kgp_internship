@@ -149,6 +149,21 @@ KOLKATA_LOCATIONS = [
     {"id": 13, "name": "Shyambazar",            "desc": "North Kolkata, five-point crossing"},
     {"id": 14, "name": "Behala",                "desc": "South-west Kolkata"},
     {"id": 15, "name": "Barasat",               "desc": "North suburban, NH-12 corridor"},
+    {"id": 16, "name": "Ecopark",               "desc": "Eco Tourism Park, New Town, Rajarhat"},
+    {"id": 17, "name": "New Town",              "desc": "Planned township, Rajarhat, North 24 Parganas"},
+    {"id": 18, "name": "Rajarhat",              "desc": "New town area, North 24 Parganas"},
+    {"id": 19, "name": "Airport",               "desc": "Netaji Subhas Chandra Bose International Airport, Dum Dum"},
+    {"id": 20, "name": "Science City",          "desc": "Science museum complex, EM Bypass, Kolkata"},
+    {"id": 21, "name": "Victoria Memorial",     "desc": "Heritage monument, Maidan, central Kolkata"},
+    {"id": 22, "name": "Dakshineswar",          "desc": "Dakshineswar Kali Temple area, north Kolkata"},
+    {"id": 23, "name": "Belur Math",            "desc": "Ramakrishna Math, Belur, Howrah"},
+    {"id": 24, "name": "Botanical Garden",      "desc": "Acharya Jagadish Chandra Bose Indian Botanic Garden, Shibpur, Howrah"},
+    {"id": 25, "name": "Rabindra Sarobar",      "desc": "Lake area, Dhakuria, south Kolkata"},
+    {"id": 26, "name": "Ruby Hospital",         "desc": "Ruby General Hospital, EM Bypass, Kolkata"},
+    {"id": 27, "name": "Garia",                 "desc": "South Kolkata, Kavi Subhash metro terminus"},
+    {"id": 28, "name": "Dum Dum Airport",       "desc": "Netaji Subhas Chandra Bose International Airport"},
+    {"id": 29, "name": "Newmarket",             "desc": "New Market, Lindsay Street, central Kolkata"},
+    {"id": 30, "name": "College Street",        "desc": "Book market and educational hub, north Kolkata"},
 ]
 
 
@@ -476,17 +491,11 @@ def _process_articles(articles: list[dict], session) -> list[dict]:
 
 def _persist_hgnn_outputs(events: list[dict], session) -> None:
     """
-    Write HGNN-adjusted confidence, severity, and multiplier back to the DB
-    for events that were processed this run.
+    Write HGNN-adjusted confidence, severity, and multiplier back to the DB.
 
-    This closes the training feedback loop:
-      1. Event enters DB with LLM confidence/severity (initial labels)
-      2. HGNN adjusts confidence and optionally corrects severity
-      3. We write hgnn_confidence, hgnn_severity, hgnn_multiplier back
-      4. Next trainer run can use these as improved training targets
-
-    Matches by source_url (unique per article). Falls back to raw_text
-    prefix match for articles without a URL. Non-fatal if DB update fails.
+    Called AFTER route scoring so hgnn_multiplier is already set on events.
+    Matches by source_url (unique per article), falls back to raw_text prefix
+    for scraped sources that don't have a canonical URL. Non-fatal on failure.
     """
     if not events:
         return
@@ -495,15 +504,21 @@ def _persist_hgnn_outputs(events: list[dict], session) -> None:
         from sqlalchemy import text as sql_text
         updated = 0
         for ev in events:
-            # Only update events that HGNN actually touched
             hgnn_conf = ev.get("hgnn_confidence")
             if hgnn_conf is None:
                 continue
 
-            source_url   = ev.get("source_url", "")
-            hgnn_sev     = ev.get("hgnn_severity")
-            hgnn_mult    = ev.get("hgnn_multiplier")
+            source_url    = ev.get("source_url", "")
+            hgnn_sev      = ev.get("hgnn_severity")
+            hgnn_mult     = ev.get("hgnn_multiplier")
             sev_corrected = ev.get("severity_corrected", False)
+
+            params = {
+                "hc":  round(float(hgnn_conf), 4),
+                "hs":  hgnn_sev,
+                "hm":  round(float(hgnn_mult), 4) if hgnn_mult is not None else None,
+                "sc":  bool(sev_corrected),
+            }
 
             if source_url:
                 session.execute(sql_text("""
@@ -513,14 +528,23 @@ def _persist_hgnn_outputs(events: list[dict], session) -> None:
                            hgnn_multiplier    = :hm,
                            severity_corrected = :sc
                     WHERE  source_url = :url
-                """), {
-                    "hc":  round(float(hgnn_conf), 4),
-                    "hs":  hgnn_sev,
-                    "hm":  round(float(hgnn_mult), 4) if hgnn_mult is not None else None,
-                    "sc":  bool(sev_corrected),
-                    "url": source_url,
-                })
+                """), {**params, "url": source_url})
                 updated += 1
+            else:
+                # Fallback: match on first 120 chars of raw_text
+                raw_text = ev.get("raw_text") or ev.get("reason") or ""
+                if raw_text:
+                    prefix = raw_text[:120]
+                    session.execute(sql_text("""
+                        UPDATE traffic_events
+                        SET    hgnn_confidence    = :hc,
+                               hgnn_severity      = :hs,
+                               hgnn_multiplier    = :hm,
+                               severity_corrected = :sc
+                        WHERE  SUBSTR(raw_text, 1, 120) = :prefix
+                          AND  source_url IS NULL OR source_url = ''
+                    """), {**params, "prefix": prefix})
+                    updated += 1
 
         session.commit()
         if updated:
@@ -733,26 +757,22 @@ def _score_route(route_data: dict, events: list[dict],
         """
         Proximity-based discount for area-wide events.
 
-        If the event has coordinates and the route has coordinates, compute
-        the minimum Haversine distance from the event to any route node and
-        map it to a discount factor:
-          ≤ 0.5 km  → 0.55  (practically on-route, near-specific weight)
-          ≤ 1.5 km  → 0.40  (within corridor, standard city discount)
-          ≤ 3.0 km  → 0.28  (nearby area)
-          > 3.0 km  → 0.15  (genuinely city-wide, far away)
-          no coords → 0.20  (unknown proximity, conservative discount)
+        Kolkata's central corridor is very dense — everything is within 1–2km.
+        Discounts are intentionally conservative so area-wide events don't
+        dominate the route score. Route-specific events carry full weight.
 
-        Two routes receiving the same area-wide event will get different
-        discounts when one's corridor is closer to the event's location.
+          ≤ 0.5 km  → 0.30  (very close, but still area-wide)
+          ≤ 1.5 km  → 0.20  (within corridor)
+          ≤ 3.0 km  → 0.12  (nearby area)
+          > 3.0 km  → 0.06  (genuinely city-wide)
+          no coords → 0.10  (unknown proximity)
         """
         ev_lat = ev.get("lat")
         ev_lon = ev.get("lon")
         if ev_lat is None or ev_lon is None or not coords:
-            return 0.20   # no spatial data — conservative city-wide discount
+            return 0.10
 
-        # Sample up to 20 evenly-spaced route nodes for efficiency
-        # (routes can have hundreds of OSM nodes; checking all is wasteful)
-        step = max(1, len(coords) // 20)
+        step   = max(1, len(coords) // 20)
         sample = coords[::step]
 
         min_dist = min(
@@ -760,17 +780,30 @@ def _score_route(route_data: dict, events: list[dict],
             for c in sample
         )
 
-        if min_dist <= 0.5:  return 0.55
-        if min_dist <= 1.5:  return 0.40
-        if min_dist <= 3.0:  return 0.28
-        return 0.15
+        if min_dist <= 0.5:  return 0.30
+        if min_dist <= 1.5:  return 0.20
+        if min_dist <= 3.0:  return 0.12
+        return 0.06
 
-    disruption_score = sum(
-        ev["weighted_score"] * ev["hgnn_multiplier"]
-        for ev in recent if ev.get("route_specific")
-    ) + sum(
-        ev["weighted_score"] * ev["hgnn_multiplier"] * _area_wide_discount(ev)
+    # Cap the area-wide contribution so a flood of city-wide events can't
+    # push every route to CRITICAL. Route-specific events are uncapped.
+    MAX_AREA_WIDE_CONTRIBUTION = 15.0
+
+    area_wide_raw = sum(
+        ev["weighted_score"] * (
+            ev["hgnn_multiplier"]
+            if ev["hgnn_multiplier"] != 0.50
+            else _area_wide_discount(ev)
+        )
         for ev in recent if not ev.get("route_specific")
+    )
+
+    disruption_score = (
+        sum(
+            ev["weighted_score"] * ev["hgnn_multiplier"]
+            for ev in recent if ev.get("route_specific")
+        )
+        + min(area_wide_raw, MAX_AREA_WIDE_CONTRIBUTION)
     )
 
     # ── Step 6: Per-route HGNN topology score ────────────────────────────────
@@ -1239,6 +1272,16 @@ def fetch_disruptions(req: DisruptionRequest):
         raw_events = _process_articles(all_articles, session)
         print(f"  [API] Events extracted: {len(raw_events)}")
 
+        # Rule-based severity correction — fixes the one systematic LLM error:
+        # road_closure events are always labeled "low" by the LLM, but truth
+        # depends on road type (major arterial → medium, bridge → high).
+        # This runs BEFORE HGNN so the corrected severity feeds into
+        # HGNN features, confidence weighting, and route scoring.
+        from scoring.severity_rules import correct_severities
+        raw_events, n_sev_corrected = correct_severities(raw_events)
+        if n_sev_corrected:
+            print(f"  [API] Severity rules: {n_sev_corrected} events corrected")
+
         # Semantic dedup
         events = semantic_deduplicate_events(raw_events)
         print(f"  [API] After dedup: {len(events)} events")
@@ -1252,11 +1295,8 @@ def fetch_disruptions(req: DisruptionRequest):
         }) or req.road_names
         events = enhance_event_confidences(events, all_route_road_names)
 
-        # ── Write HGNN outputs back to DB for training feedback loop ──────────
-        # After HGNN adjusts confidence/severity, persist those values so the
-        # trainer can load them as improved targets on the next training run.
-        # Only updates rows that exist (matched by source_url or raw_text hash).
-        _persist_hgnn_outputs(events, session)
+        # Note: _persist_hgnn_outputs is called AFTER route scoring below,
+        # so hgnn_multiplier (set inside _score_route) is included in the write.
 
     except Exception as e:
         import traceback
@@ -1320,6 +1360,14 @@ def fetch_disruptions(req: DisruptionRequest):
     best_i = _pick_best_route(scored) if scored else 0
     for i, r in enumerate(scored):
         r["is_best"] = (i == best_i)
+
+    # ── Write HGNN outputs back to DB — after scoring so hgnn_multiplier is set
+    try:
+        _db_session = get_session()
+        _persist_hgnn_outputs(events, _db_session)
+        _db_session.close()
+    except Exception as _pe:
+        pass   # non-fatal
 
     # Build markers — TomTom events use lat/lon, others need geocoding (future work)
     markers = []

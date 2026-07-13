@@ -39,6 +39,33 @@ CASCADE_PROB_THRESHOLD = 0.45
 # Max extra roads to add via cascade expansion
 MAX_CASCADE_ROADS = 5
 
+# Default severity override threshold — conservative until eval confirms accuracy
+_DEFAULT_SEV_THRESHOLD = 0.85
+
+
+def _get_sev_override_threshold() -> float:
+    """
+    Return the severity override threshold.
+
+    After evaluate_hgnn.py runs and confirms HGNN accuracy ≥ 0.80 on
+    verified labels, it writes a tuned threshold to a small config file
+    (hgnn_eval_threshold.txt).  We read that here so the threshold
+    auto-lowers without requiring a code change.
+
+    Falls back to the conservative default (0.85) if no eval has been run.
+    """
+    import os
+    threshold_file = os.path.join(os.path.dirname(__file__), "weights", "eval_threshold.txt")
+    try:
+        if os.path.exists(threshold_file):
+            with open(threshold_file) as f:
+                val = float(f.read().strip())
+            if 0.50 <= val <= 0.99:
+                return val
+    except Exception:
+        pass
+    return _DEFAULT_SEV_THRESHOLD
+
 
 # ── 1. City-wide confidence enhancement ──────────────────────────────────────
 
@@ -76,6 +103,11 @@ def enhance_event_confidences(
 
     adj_confs = result.get("event_confidence_adj", [])
 
+    # Read threshold once — avoid a file open per event
+    SEV_OVERRIDE_THRESHOLD = _get_sev_override_threshold()
+    sev_preds = result.get("event_severity_preds", [])
+    sev_probs = result.get("event_severity_probs", [])
+
     adjusted = 0
     for i, ev in enumerate(events):
         if i >= len(adj_confs):
@@ -95,21 +127,15 @@ def enhance_event_confidences(
         )
 
         # ── Severity correction ───────────────────────────────────────────────
-        # GUARD: Only override LLM severity when the model is highly confident.
-        # The LLM has read the full article text; the HGNN only has tabular
-        # features. With a small / still-training model, 65% confidence is
-        # not reliable enough to override the richer LLM signal.
-        # Threshold raised from 0.65 → 0.85. Re-evaluate after retraining
-        # on verified ground-truth labels.
-        SEV_OVERRIDE_THRESHOLD = 0.85
-        sev_preds = result.get("event_severity_preds", [])
-        sev_probs = result.get("event_severity_probs", [])
+        # Override LLM severity only when HGNN max-class probability exceeds
+        # the threshold stored in eval_threshold.txt (written by evaluate_hgnn.py).
+        # Threshold is 0.70 after eval confirmed 85.6% accuracy; falls back to
+        # the conservative 0.85 default if no eval has been run yet.
         if i < len(sev_preds):
             hgnn_sev = sev_preds[i]
             orig_sev = ev.get("severity", "low")
             ev["hgnn_severity"]      = hgnn_sev
             ev["severity_pre_hgnn"]  = orig_sev
-            # Only override if HGNN is very confident (threshold raised from 0.65)
             if i < len(sev_probs):
                 max_prob = max(sev_probs[i])
                 if max_prob > SEV_OVERRIDE_THRESHOLD and hgnn_sev != orig_sev:

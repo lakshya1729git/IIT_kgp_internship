@@ -147,11 +147,62 @@ best route = lowest  travel_time × (1 + risk_score / 10)
 
 ---
 
+## HGNN — Heterogeneous Graph Neural Network
+
+The HGNN layer refines LLM-assigned severities using graph-based context: multi-source corroboration, spatial road clustering, source reliability, and temporal decay.
+
+### Architecture
+- **Node types**: events, roads, sources, locations
+- **Relations**: event→road, event→source, event→location, road↔road (spatial)
+- **Outputs**: road disruption probability, adjusted event confidence, severity logits (3-class)
+
+### Training workflow
+
+```bash
+cd app
+
+# 1. Auto-label real TomTom events with rule-based ground truth
+python auto_label.py               # labels all unlabeled real events
+python auto_label.py --stats       # check coverage
+
+# 2. (Optional) Generate synthetic data for class balance
+python generate_training_data.py --count 400 --clear-synthetic
+
+# 3. Train the model
+#    80% of verified labels → train (with 5× loss boost)
+#    20% of verified labels → val  (ground-truth validation signal)
+#    All proxy-labeled events → train
+python -m hgnn.trainer --epochs 200 --limit 1500
+
+# 4. Evaluate against ground truth
+python evaluate_hgnn.py --export results/
+```
+
+### Key design decisions
+
+| Decision | Reason |
+|----------|--------|
+| 80% verified → train, 20% → val | Old approach (all verified → val) meant model never saw real medium/high patterns |
+| `verified_label_weight = 5×` | Verified labels get higher gradient contribution even when mixed with proxy data |
+| Class-weighted CE loss | DB is ~67% low — weighting prevents the model from collapsing to always predict low |
+| Blind eval mode (`--blind`) | Zero-out LLM severity feature to measure pure graph reasoning vs. shortcut learning |
+
+### Eval targets
+
+| Metric | Min acceptable | Target |
+|--------|---------------|--------|
+| Overall accuracy | > LLM baseline (~70%) | ≥ 75% |
+| Medium class F1 | > 0.30 | ≥ 0.50 |
+| LLM-error correction rate | > 10% | ≥ 25% |
+
+---
+
 ## Layers
 
 | Layer | Description | Status |
 |-------|-------------|--------|
 | **1** | LLM disruption intelligence — this repo | ✅ Complete |
+| **1b** | HGNN severity refinement | ✅ Implemented — retrain after `auto_label.py` |
 | **2** | Bayesian probabilistic data fusion | 🔲 Planned |
 | **3** | CVaR risk-aware routing + explainability | 🔲 Planned |
 

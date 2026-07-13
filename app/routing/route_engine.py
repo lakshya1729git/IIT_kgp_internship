@@ -131,31 +131,108 @@ def _download_and_cache(cache_path: str):
 
 # ── Geocoding with city context ───────────────────────────────────────────────
 
+# Hardcoded coordinates for Kolkata landmarks that Nominatim frequently
+# misresolves (returns wrong country/city).  Shared with multimodal._geocode.
+_KOLKATA_LANDMARKS: dict[str, tuple[float, float]] = {
+    "ecopark":                (22.5969, 88.4790),
+    "eco park":               (22.5969, 88.4790),
+    "eco tourism park":       (22.5969, 88.4790),
+    "new town":               (22.5890, 88.4700),
+    "rajarhat":               (22.5890, 88.4700),
+    "action area 1":          (22.5870, 88.4710),
+    "action area i":          (22.5870, 88.4710),
+    "new town action area 1": (22.5870, 88.4710),
+    "biswa bangla gate":      (22.5853, 88.4760),
+    "airport":                (22.6548, 88.4467),
+    "dum dum airport":        (22.6548, 88.4467),
+    "netaji airport":         (22.6548, 88.4467),
+    "science city":           (22.5369, 88.3966),
+    "victoria memorial":      (22.5448, 88.3426),
+    "dakshineswar":           (22.6537, 88.3578),
+    "belur math":             (22.6368, 88.3518),
+    "botanical garden":       (22.5622, 88.3072),
+    "acharya jagadish":       (22.5622, 88.3072),
+    "rabindra sarobar":       (22.5091, 88.3509),
+    "dhakuria lake":          (22.5091, 88.3509),
+    "ruby hospital":          (22.5209, 88.3969),
+    "garia":                  (22.4731, 88.3869),
+    "newmarket":              (22.5630, 88.3510),
+    "new market":             (22.5630, 88.3510),
+    "college street":         (22.5796, 88.3634),
+    "china town":             (22.5741, 88.3632),
+    "chinatown":              (22.5741, 88.3632),
+}
+
 def _geocode_with_context(place: str) -> tuple[float, float]:
     """
     Geocode a place name, appending ', West Bengal, India' if no
     regional keyword is present. Uses West Bengal (not just Kolkata)
     so suburbs like Barasat resolve to the correct district.
-    """
-    place_lower = place.lower()
 
+    Resolution order:
+      1. Hardcoded landmark table (fast, no network, no wrong-country risk)
+      2. Nominatim with ', West Bengal, India' suffix
+      3. Nominatim with ', Kolkata, West Bengal, India' suffix (stricter)
+      All Nominatim results are validated against a West Bengal bounding box.
+    """
+    # ── 1. Landmark table lookup ──────────────────────────────────────────────
+    p_lower = place.lower().strip()
+    if p_lower in _KOLKATA_LANDMARKS:
+        coords = _KOLKATA_LANDMARKS[p_lower]
+        print(f"  [Route] Landmark match '{place}' -> {coords}")
+        return coords
+    for key, coords in _KOLKATA_LANDMARKS.items():
+        if key in p_lower or p_lower in key:
+            print(f"  [Route] Landmark partial match '{place}' -> {coords}")
+            return coords
+
+    # ── 2. Nominatim with bounding-box guard ──────────────────────────────────
+    # Approximate bounding box for West Bengal + immediate surroundings
+    _WB_LAT_MIN, _WB_LAT_MAX = 21.0, 27.5
+    _WB_LON_MIN, _WB_LON_MAX = 85.5, 90.5
+
+    def _in_region(lat: float, lon: float) -> bool:
+        return _WB_LAT_MIN <= lat <= _WB_LAT_MAX and _WB_LON_MIN <= lon <= _WB_LON_MAX
+
+    place_lower = place.lower()
     needs_hint = not any(
         kw in place_lower
         for kw in ("kolkata", "calcutta", "india", "west bengal", "wb",
                    "north 24", "south 24", "24 parganas")
     )
 
+    # Always keep the region suffix — never strip it on retry
     query = f"{place}, West Bengal, India" if needs_hint else place
 
+    # Try primary query
     try:
         coords = ox.geocode(query)
-        print(f"  [Route] Geocoded '{place}' -> {coords}")
-        return coords
-    except Exception:
-        print(f"  [Route] Retrying geocode without region hint for '{place}' ...")
-        coords = ox.geocode(place)
-        print(f"  [Route] Geocoded '{place}' -> {coords}")
-        return coords
+        if _in_region(coords[0], coords[1]):
+            print(f"  [Route] Geocoded '{place}' -> {coords}")
+            return coords
+        print(f"  [Route] Geocode for '{place}' returned out-of-region result {coords}, retrying with stricter query ...")
+    except Exception as e:
+        print(f"  [Route] Geocode failed for '{query}': {e}, retrying ...")
+
+    # Retry with an even more specific qualifier
+    fallback_query = f"{place}, Kolkata, West Bengal, India"
+    try:
+        coords = ox.geocode(fallback_query)
+        if _in_region(coords[0], coords[1]):
+            print(f"  [Route] Geocoded '{place}' (fallback) -> {coords}")
+            return coords
+        raise ValueError(
+            f"Could not geocode '{place}' within West Bengal. "
+            f"Got coordinates {coords} which appear to be outside the region. "
+            "Try adding 'Kolkata' or a nearby landmark to the name."
+        )
+    except ValueError:
+        raise
+    except Exception as e:
+        raise ValueError(
+            f"Could not geocode '{place}'. "
+            "Try adding 'Kolkata' to the name, or use a well-known landmark."
+        ) from e
 
 
 # ── Haversine distance (sanity check) ────────────────────────────────────────
