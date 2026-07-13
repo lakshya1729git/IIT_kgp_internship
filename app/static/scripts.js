@@ -41,36 +41,123 @@ let currentRoutes   = [];
 let activeIdx       = 0;
 let currentMode     = 'drive';
 let currentComboMode = '';
+let selectedModes   = new Set(['drive']);  // multi-select state
 let disruptionsLoaded   = false;
 let lastDisruptionData  = null;
 let _busNetwork         = null;  // cached {routes, stops} from /api/bus-network
 
-// ── Mode selector ────────────────────────────────────────────────────────────
-function setMode(mode) {
-  const prevMode = currentMode;
+// ── Mode selector (multi-select chips) ───────────────────────────────────────
 
-  if (mode === 'metro+walk' || mode === 'metro+bike' || mode === 'metro+drive' || mode === 'metro+walk+drive') {
-    currentMode = 'metro';
-    currentComboMode = mode;
-  } else {
-    currentMode = mode;
-    currentComboMode = '';
+// Backend constraints (routing/multimodal.py):
+//  1 mode  — any single mode
+//  2 modes — metro + walk/bike/drive  |  walk + bus  |  bike + bus
+//  3 modes — only {walk, metro, drive}
+//  4+ modes — not supported
+function _validateModes(modes) {
+  const s = new Set(modes);
+  if (s.size === 1) return null;
+  if (s.size === 2) {
+    if (s.has('metro')) return null;                          // metro + anything
+    if (s.has('walk') && s.has('bus')) return null;          // walk + bus ✅
+    if (s.has('bike') && s.has('bus')) return null;          // bike + bus ✅
+    if (s.has('bus')) return 'Bus can only be combined with Walk or Bike';
+    return 'Two-mode combos must include Metro, or use Walk/Bike + Bus';
+  }
+  if (s.size === 3) {
+    if (s.has('metro') && s.has('walk') && s.has('drive')) return null;
+    return 'Three-mode combo only supports Walk + Metro + Drive';
+  }
+  return 'Maximum 3 modes can be combined';
+}
+
+// Briefly shake the rejected chip and show a toast
+function _flashChipError(mode, msg) {
+  const btn = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
+  if (btn) {
+    btn.classList.add('chip-error');
+    setTimeout(() => btn.classList.remove('chip-error'), 700);
+  }
+  toast(msg);
+}
+
+function toggleMode(mode) {
+  const wasBus = selectedModes.has('bus');
+
+  // ── Pure toggle: clicking an active chip always deselects it ─────────────
+  if (selectedModes.has(mode)) {
+    selectedModes.delete(mode);
+
+    // Sync visuals and state
+    document.querySelectorAll('.mode-chip').forEach(btn => {
+      btn.classList.toggle('active', selectedModes.has(btn.dataset.mode));
+    });
+    _resolveModeState();
+
+    // Bus overlay cleanup if bus was removed
+    if (!selectedModes.has('bus') && wasBus) {
+      clearBusOverlay();
+      document.getElementById('bus-legend').style.display = 'none';
+      document.getElementById('map-legend').style.display = '';
+      document.getElementById('panel').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🗺️</div>
+          <p>Choose your start and end points.<br>AI traffic routes appear here.</p>
+        </div>`;
+    }
+
+    _syncPlaceholders(_resolveDisplayMode());
+    _updateModeHint();
+    return;
   }
 
-  document.querySelectorAll('.mode-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === mode);
+  // ── Adding a new mode ─────────────────────────────────────────────────────
+
+  // Bus can only be combined with walk or bike.
+  if (mode === 'bus') {
+    if (selectedModes.size === 1 && (selectedModes.has('walk') || selectedModes.has('bike'))) {
+      selectedModes.add('bus');   // walk+bus or bike+bus — valid
+    } else {
+      selectedModes.clear();
+      selectedModes.add('bus');   // replace everything with pure bus
+    }
+  } else {
+    // Adding walk or bike while bus is active: keep bus (valid combo)
+    // Adding anything else while bus is active: drop bus first
+    if (selectedModes.has('bus') && mode !== 'walk' && mode !== 'bike') {
+      selectedModes.delete('bus');
+    }
+    // If bus+walk/bike already selected and user adds a third: drop bus
+    if (selectedModes.has('bus') && selectedModes.size >= 2) {
+      selectedModes.delete('bus');
+    }
+
+    // Validate the new combo before committing
+    const tentative = [...selectedModes, mode];
+    const err = _validateModes(tentative);
+    if (err) {
+      _flashChipError(mode, err);
+      return;
+    }
+    selectedModes.add(mode);
+  }
+
+  // Sync chip visuals
+  document.querySelectorAll('.mode-chip').forEach(btn => {
+    btn.classList.toggle('active', selectedModes.has(btn.dataset.mode));
   });
 
-  // Update input placeholders for the new mode
-  _syncPlaceholders(mode);
+  _resolveModeState();
 
-  // ── Bus overlay: show all stops + routes when bus tab is selected ──────────
-  if (mode === 'bus') {
-    loadBusOverlay();
-    document.getElementById('bus-legend').style.display  = '';
-    document.getElementById('map-legend').style.display  = 'none';
-  } else if (prevMode === 'bus') {
-    // Leaving bus mode — remove bus overlay, restore empty-state panel
+  // Bus overlay side-effects
+  const nowBus       = selectedModes.has('bus');
+  const nowFeederBus = nowBus && (selectedModes.has('walk') || selectedModes.has('bike'));
+  if (nowBus && !wasBus) {
+    if (!nowFeederBus) {
+      loadBusOverlay();
+      document.getElementById('bus-legend').style.display  = '';
+      document.getElementById('map-legend').style.display  = 'none';
+    }
+  } else if (!nowBus && wasBus) {
     clearBusOverlay();
     document.getElementById('bus-legend').style.display  = 'none';
     document.getElementById('map-legend').style.display  = '';
@@ -81,7 +168,58 @@ function setMode(mode) {
       </div>`;
   }
 
-  // Metro overlay is always visible — no-op here, loaded once on boot
+  _syncPlaceholders(_resolveDisplayMode());
+  _updateModeHint();
+}
+
+// Derive currentMode and currentComboMode from selectedModes set
+function _resolveModeState() {
+  const modes = [...selectedModes];
+
+  if (modes.length === 0) {
+    currentMode      = '';
+    currentComboMode = '';
+  } else if (modes.length === 1) {
+    currentMode      = modes[0];
+    currentComboMode = '';
+  } else {
+    if (modes.includes('metro')) {
+      currentMode = 'metro';
+      const others = modes.filter(m => m !== 'metro').sort();
+      currentComboMode = ['metro', ...others].join('+');
+    } else {
+      const priority = ['drive', 'bike', 'walk'];
+      currentMode = priority.find(m => modes.includes(m)) || modes[0];
+      currentComboMode = modes.sort().join('+');
+    }
+  }
+}
+
+// Returns the display mode string for placeholders / labels
+function _resolveDisplayMode() {
+  if (currentComboMode) return currentComboMode;
+  return currentMode;
+}
+
+// Update the hint line below the chips
+function _updateModeHint() {
+  const hint = document.getElementById('mode-hint');
+  if (!hint) return;
+  const modes = [...selectedModes];
+  const labels = { drive: 'Drive', walk: 'Walk', bike: 'Bike', metro: 'Metro', bus: 'Bus' };
+  if (modes.length === 0) {
+    hint.textContent = 'Select a transport mode';
+    hint.classList.remove('multimodal');
+    hint.style.color = '#c5221f';   // red hint — nothing selected
+  } else if (modes.length === 1) {
+    hint.textContent = `Mode: ${labels[modes[0]] || modes[0]}`;
+    hint.classList.remove('multimodal');
+    hint.style.color = '';
+  } else {
+    hint.textContent = `Multimodal: ${modes.map(m => labels[m] || m).join(' + ')}`;
+    hint.classList.add('multimodal');
+    hint.style.color = '';
+  }
 }
 
 // ── Load locations ───────────────────────────────────────────────────────────
@@ -108,14 +246,17 @@ async function loadLocations() {
 }
 
 function _syncPlaceholders(mode) {
-  const isCombo = mode === 'metro+walk' || mode === 'metro+bike' || mode === 'metro+drive' || mode === 'metro+walk+drive';
-  const hint = mode === 'metro'
-    ? 'metro station'
-    : isCombo
-      ? 'locality or metro station'
-      : mode === 'bus'
-        ? 'bus stop or locality'
-        : 'location';
+  const modes = [...selectedModes];
+  let hint;
+  if (modes.includes('bus')) {
+    hint = 'bus stop or locality';
+  } else if (modes.includes('metro') && modes.length > 1) {
+    hint = 'locality or metro station';
+  } else if (modes.length === 1 && modes[0] === 'metro') {
+    hint = 'metro station';
+  } else {
+    hint = 'location';
+  }
   document.getElementById('src-input').placeholder = `Source ${hint}`;
   document.getElementById('dst-input').placeholder = `Destination ${hint}`;
 }
@@ -123,12 +264,13 @@ function _syncPlaceholders(mode) {
 // Build the flat option list for a given mode
 function _buildOptions(mode) {
   const opts = [];
-  // For pure metro: only stations. For combo (metro+walk/bike/drive) and
-  // all other modes: show localities first, then all metro stations.
-  const isCombo = mode === 'metro+walk' || mode === 'metro+bike' || mode === 'metro+drive' || mode === 'metro+walk+drive';
-  const isBus   = mode === 'bus';
+  const modes  = [...selectedModes];
+  const isBus   = modes.includes('bus');
+  const isMetro = modes.includes('metro');
+  const isCombo = isMetro && modes.length > 1;
+  const pureMetro = isMetro && modes.length === 1;
 
-  if (mode !== 'metro') {
+  if (!pureMetro) {
     // Localities group
     const localityLabel = isBus
       ? '📍 Kolkata Localities & Bus Stops'
@@ -181,7 +323,7 @@ function _buildOptions(mode) {
 // Render the dropdown list, optionally filtered by query
 function _renderDropdown(which, query) {
   const dd   = document.getElementById(`${which}-dropdown`);
-  // For combo modes (metro+walk/bike/drive) use the full combo mode so
+  // For combo modes use the full combo mode so
   // _buildOptions knows to include both localities AND metro stations.
   const mode = currentComboMode || currentMode;
   const opts = _buildOptions(mode);
@@ -660,6 +802,7 @@ async function go() {
   const dst = _dstValue.trim();
   if (!src || !dst) { toast('Select source and destination'); return; }
   if (src === dst)  { toast('Source and destination cannot be the same'); return; }
+  if (selectedModes.size === 0) { toast('Select at least one transport mode'); return; }
 
   setBtn(true, 'Loading…');
   setStatus(`Computing ${currentMode} routes…`);
@@ -674,6 +817,7 @@ async function go() {
   try {
     const payload = { source: src, destination: dst };
     if (currentComboMode) {
+      // Multi-select: send the resolved modes array
       payload.modes = currentComboMode.split('+');
     } else {
       payload.mode = currentMode;
@@ -696,24 +840,18 @@ async function go() {
   renderPanel(currentRoutes, [], false, null, src, dst);
   setBtn(false, 'Get Routes');
 
-  const isMetroCombo = currentComboMode.startsWith('metro+');
+  const isMetroCombo = selectedModes.has('metro') && selectedModes.size > 1;
 
   // Metro-only: no disruption analysis needed — show journey detail immediately
   if (currentMode === 'metro' && !isMetroCombo) {
-    const comboLabels = {
-      'metro+walk':       'Metro+Walk',
-      'metro+bike':       'Metro+Bike',
-      'metro+drive':      'Metro+Drive',
-      'metro+walk+drive': 'Walk+Metro+Cab',
-    };
-    const modeStr = comboLabels[currentComboMode] || 'Metro';
+    const modeStr = _getModeLabel();
     setStatus(`${src} → ${dst} · ${modeStr} route`);
     return;
   }
 
-  // Bus: no disruption analysis — routes are stop-based, show immediately
-  if (currentMode === 'bus') {
-    setStatus(`${src} → ${dst} · Bus route`);
+  // Bus (pure, walk+bus, bike+bus): no disruption analysis — routes are stop-based
+  if (currentMode === 'bus' || currentComboMode === 'bus+walk' || currentComboMode === 'bike+bus' || currentComboMode === 'bus+bike') {
+    setStatus(`${src} → ${dst} · ${_getModeLabel()} route`);
     renderPanel(currentRoutes, [], true, null, src, dst);
     // Restore stop markers so user can see nearby stops alongside their route
     if (_busNetwork) drawBusStopsOnly(_busNetwork.stops);
@@ -989,16 +1127,18 @@ function drawMarkers(markers) {
   _updateZoneLegend(withCoords);
 }
 
+// ── Mode label helper — builds a human-readable label from selectedModes ──────
+function _getModeLabel() {
+  const modes = [...selectedModes];
+  const ICON = { drive: '🚗', walk: '🚶', bike: '🚲', metro: '🚇', bus: '🚌' };
+  const NAME = { drive: 'Drive', walk: 'Walk', bike: 'Bike', metro: 'Metro', bus: 'Bus' };
+  if (modes.length === 1) return `${ICON[modes[0]] || ''} ${NAME[modes[0]] || modes[0]}`.trim();
+  return modes.map(m => `${ICON[m] || ''}${NAME[m] || m}`).join('+');
+}
+
 // ── Panel rendering ───────────────────────────────────────────────────────────
 function renderLoading(src, dst, mode) {
-  const comboLabels = {
-    'metro+walk':       '🚇+🚶 Metro+Walk',
-    'metro+bike':       '🚇+🚲 Metro+Bike',
-    'metro+drive':      '🚇+🚗 Metro+Drive',
-    'metro+walk+drive': '🚶+🚇+🚕 Walk+Metro+Cab',
-    'bus':              '🚌 Bus',
-  };
-  const modeLabel = comboLabels[currentComboMode] || comboLabels[mode] || MODE_LABEL[mode] || mode;
+  const modeLabel = _getModeLabel();
   document.getElementById('panel').innerHTML = `
     <div class="sec-lbl">${modeLabel} Routes</div>
     <div class="loading-row">
@@ -1013,18 +1153,12 @@ function renderError(msg) {
 }
 
 function renderPanel(routes, markers, ready, weather, src, dst) {
-  const mode  = currentComboMode || currentMode;
-  const comboLabels = {
-    'metro+walk':       '🚇+🚶 Metro+Walk',
-    'metro+bike':       '🚇+🚲 Metro+Bike',
-    'metro+drive':      '🚇+🚗 Metro+Drive',
-    'metro+walk+drive': '🚶+🚇+🚕 Walk+Metro+Cab',
-    'bus':              '🚌 Bus',
-  };
-  const mLabel = comboLabels[mode] || MODE_LABEL[currentMode] || currentMode;
+  const mode   = currentComboMode || currentMode;
+  const mLabel = _getModeLabel();
 
   let html = '';
-  const isPureBus   = mode === 'bus';
+  const isPureBus   = mode === 'bus' || mode === 'bus+walk' || mode === 'walk+bus'
+                    || mode === 'bike+bus' || mode === 'bus+bike';
   const isPureMetro = mode === 'metro';
   const note = (ready || isPureMetro || isPureBus)
     ? ''
@@ -1070,11 +1204,20 @@ function buildRouteCard(r, i, ready, markers, mode) {
   // Bus: no disruption analysis — label it
   let evtClass = '', evtIcon = '', evtText = '';
   const isPureMetro  = mode === 'metro';
-  const isPureBus    = mode === 'bus';
-  const isMetroCombo = mode === 'metro+walk' || mode === 'metro+bike' || mode === 'metro+drive' || mode === 'metro+walk+drive';
+  const isPureBus    = mode === 'bus' || mode === 'bus+walk' || mode === 'walk+bus'
+                     || mode === 'bike+bus' || mode === 'bus+bike';
+  const isMetroCombo = selectedModes.has('metro') && selectedModes.size > 1;
+  const isFeederBus  = mode === 'walk+bus' || mode === 'bus+walk'
+                     || mode === 'bike+bus' || mode === 'bus+bike';
+  const feederLabel  = isFeederBus
+    ? (mode.includes('bike') ? 'Bike' : 'Walk')
+    : null;
   if (isPureMetro) {
     evtClass = 'ok'; evtIcon = '✓';
     evtText  = 'Metro route';
+  } else if (isFeederBus) {
+    evtClass = 'ok'; evtIcon = '✓';
+    evtText  = `${feederLabel} + Bus route`;
   } else if (isPureBus) {
     evtClass = 'ok'; evtIcon = '✓';
     evtText  = 'Bus route';
@@ -1105,14 +1248,17 @@ function buildRouteCard(r, i, ready, markers, mode) {
   if ((isPureMetro || isMetroCombo) && r.segments) {
     const metro = r.segments.find(s => s.type === 'metro');
     let comboSubtitle;
-    if (mode === 'metro+walk+drive') {
-      comboSubtitle = 'Walk → Metro → Cab';
+    if (isMetroCombo) {
+      const others = [...selectedModes].filter(m => m !== 'metro');
+      comboSubtitle = 'Metro + ' + others.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(' + ');
     } else {
-      const feederPart = mode.split('+')[1] || 'walk';
-      const feederLabel = feederPart.charAt(0).toUpperCase() + feederPart.slice(1);
-      comboSubtitle = `Metro + ${feederLabel}`;
+      comboSubtitle = 'Metro';
     }
     subtitle = metro ? `${metro.from} → ${metro.to}` : comboSubtitle;
+  } else if (isFeederBus) {
+    subtitle = r.src_stop && r.dst_stop
+      ? `${feederLabel} to ${r.src_stop} · Bus to ${r.dst_stop}`
+      : `${feederLabel} to bus stop · ride bus`;
   } else if (isPureBus) {
     subtitle = r.src_stop && r.dst_stop
       ? `${r.src_stop} → ${r.dst_stop}`
@@ -1123,6 +1269,9 @@ function buildRouteCard(r, i, ready, markers, mode) {
 
   const roadsText = (r.road_names || []).slice(0, 4).join(' · ') || '—';
 
+  // Strip any legacy "Best · " prefix baked into the label — the isBest badge handles it
+  const displayLabel = (r.label || '').replace(/^Best\s*[·•]\s*/i, '');
+
   let html = `
   <div class="route-card ${isActive ? 'active' : ''} ${isBest ? 'is-best' : ''}"
        id="rc-${i}" onclick="selectRoute(${i})">
@@ -1130,7 +1279,7 @@ function buildRouteCard(r, i, ready, markers, mode) {
     <div class="rc-top">
       <div class="rc-num" style="${isActive ? `background:${modeColor}` : ''}">${i + 1}</div>
       <div class="rc-title">
-        <div class="rc-label">${r.label}</div>
+        <div class="rc-label">${displayLabel}</div>
         <div class="rc-subtitle">${subtitle}</div>
       </div>
       ${isBest ? '<div class="best-badge">Best</div>' : ''}
@@ -1145,7 +1294,7 @@ function buildRouteCard(r, i, ready, markers, mode) {
       ${(ready && riskLevel && !isPureMetro && !isPureBus)
         ? `<div class="stat-chip" style="color:${riskColor}">${r.risk_score || 0}<span class="lbl" style="color:${riskColor}99"> risk</span></div>`
         : ''}
-      ${isPureBus && r.num_stops != null
+      ${(isPureBus || isFeederBus) && r.num_stops != null
         ? `<div class="stat-chip">${r.num_stops}<span class="lbl"> stops</span></div>`
         : ''}
     </div>
@@ -1157,6 +1306,8 @@ function buildRouteCard(r, i, ready, markers, mode) {
   if (isActive) {
     if (isPureMetro || isMetroCombo) {
       html += buildMetroJourney(r);
+    } else if (isFeederBus) {
+      html += buildWalkBusJourney(r);
     } else if (isPureBus) {
       html += buildBusJourney(r);
     } else {
@@ -1237,9 +1388,58 @@ function buildBusJourney(r) {
   return html;
 }
 
-// ── Metro journey breakdown ───────────────────────────────────────────────────
-function buildMetroJourney(r) {
+// ── Walk + Bus journey breakdown ──────────────────────────────────────────────
+function buildWalkBusJourney(r) {
   const segments = r.segments || [];
+  let html = '<div class="metro-journey">';
+  html += '<div class="expand-sec">Journey Breakdown</div>';
+
+  const SEG_ICON  = { walk: '🚶', bike: '🚲', bus: '🚌' };
+  const SEG_COLOR = { walk: '#607D8B', bike: '#e37400', bus: '#FF5722' };
+  const SEG_LABEL = { walk: 'Walk', bike: 'Bike', bus: 'Ride Bus' };
+
+  segments.forEach((seg, i) => {
+    const isLast  = i === segments.length - 1;
+    const icon    = SEG_ICON[seg.type]  || '▶';
+    const color   = SEG_COLOR[seg.type] || '#9aa0a6';
+    const label   = SEG_LABEL[seg.type] || seg.type;
+    let detail = `${seg.from} → ${seg.to}`;
+    if (seg.type === 'bus') {
+      const stops = seg.num_stops != null ? `${seg.num_stops} stop${seg.num_stops !== 1 ? 's' : ''}` : '';
+      if (stops) detail += ` · ${stops}`;
+      if (seg.matching_routes && seg.matching_routes.length) {
+        const badge = seg.matching_routes.slice(0, 2).map(rt =>
+          `<span style="background:${color}22;color:${color};border:1px solid ${color}44;
+            border-radius:5px;padding:1px 6px;font-size:10px;font-weight:600;margin-right:3px">
+            🚌 ${rt.route_name}</span>`
+        ).join('');
+        detail += `<br><div style="margin-top:3px">${badge}</div>`;
+      }
+    }
+    html += `
+    <div class="journey-seg">
+      <div class="seg-track">
+        <div class="seg-icon ${seg.type}" style="background:${color}22">${icon}</div>
+        ${!isLast ? `<div class="seg-connector" style="background:${color}"></div>` : ''}
+      </div>
+      <div class="seg-body">
+        <div class="seg-title" style="color:${color}">${label}</div>
+        <div class="seg-detail">${detail}</div>
+        <div class="seg-time-chip">${seg.time_min} min · ${seg.distance_km} km</div>
+      </div>
+    </div>`;
+  });
+
+  if (r.bus_note) {
+    html += `<div class="metro-note-banner">${r.bus_note}</div>`;
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ── Metro journey breakdown ───────────────────────────────────────────────────
+function buildMetroJourney(r) {  const segments = r.segments || [];
   if (segments.length === 0) {
     // Fallback: just show station list
     return buildExpandedDetail(r, true);
@@ -1260,11 +1460,13 @@ function buildMetroJourney(r) {
     let detail = '';
     if (isMetro && seg.stations) {
       const stops = seg.stations;
-      const count = seg.num_stops || stops.length - 1;
+      // "stops" = intermediate stations between board and alight (exclusive of endpoints)
+      // This matches how transit apps count stops (not edges/hops).
+      const midStops = stops.slice(1, -1);
+      const count = seg.num_stops != null ? seg.num_stops : midStops.length;
       detail = `${stops[0]} → ${stops[stops.length - 1]} · ${count} stop${count !== 1 ? 's' : ''}`;
-      if (seg.stations.length > 2) {
-        const midStops = stops.slice(1, -1).join(', ');
-        detail += `<br><small style="color:#9aa0a6">${midStops}</small>`;
+      if (midStops.length > 0) {
+        detail += `<br><small style="color:#9aa0a6">${midStops.join(', ')}</small>`;
       }
       // Next train chip
       if (seg.next_train) {
@@ -1564,3 +1766,4 @@ function _updateZoneLegend(markers) {
 loadLocations();
 loadMetroOverlay();
 document.getElementById('map-legend').classList.add('visible');
+_updateModeHint();

@@ -1,11 +1,10 @@
 """
-model.py — Temporal HAN for traffic disruption scoring (V2)
+model.py — Temporal HAN for traffic disruption scoring (V3)
 ============================================================
-Changes from V1:
-  1. EVENT_FEAT_DIM 18 → 24  (+ temporal encoding)
-  2. ROAD_FEAT_DIM  4  → 6   (+ rush_hour_ratio, propagation_score)
-  3. Third output head: severity_head  → 3-class classification (low/med/high)
-  4. Attention weights exposed from forward() for explainability
+V3 changes (matching graph_builder.py V3):
+  - LOCATION_FEAT_DIM: 3 → 5  (meaningful location features now)
+  - Input projection for location updated automatically via import
+  - No other architecture changes needed — feature dims drive everything
 
 Outputs:
   road_disruption_prob  : (N_road,)      ∈ [0,1]

@@ -72,47 +72,73 @@ html, body {
 }
 
 /* ==================================================
-   MODE TABS  — two rows of compact pills
+   MODE CHIPS  — multi-select toggles
 ================================================== */
 
-.mode-tabs {
+.mode-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  background: #f1f3f4;
-  border-radius: 10px;
-  padding: 5px;
+  gap: 5px;
 }
 
-.mode-tab {
-  flex: 1 1 auto;
-  height: 28px;
-  min-width: 0;
-  border: none;
-  border-radius: 7px;
-  background: transparent;
+.mode-chip {
+  height: 30px;
+  border: 1.5px solid #dadce0;
+  border-radius: 20px;
+  background: #fff;
   color: #5f6368;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  padding: 0 6px;
+  padding: 0 11px;
   white-space: nowrap;
-  transition: background .15s, color .15s, box-shadow .15s;
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+  user-select: none;
 }
-.mode-tab:hover { background: rgba(255,255,255,.75); color: #202124; }
-.mode-tab.active {
-  background: #fff;
+.mode-chip:hover {
+  background: #f0f6ff;
+  border-color: #aecbfa;
   color: #1a73e8;
-  box-shadow: 0 1px 4px rgba(60,64,67,.18);
 }
-.mode-tab.active[data-mode="walk"]                                    { color: #1e8e3e; }
-.mode-tab.active[data-mode="bike"]                                    { color: #e37400; }
-.mode-tab.active[data-mode="metro"],
-.mode-tab.active[data-mode="metro+walk"],
-.mode-tab.active[data-mode="metro+bike"],
-.mode-tab.active[data-mode="metro+drive"],
-.mode-tab.active[data-mode="metro+walk+drive"]                        { color: #7c4dff; }
+.mode-chip.active {
+  background: #e8f0fe;
+  border-color: #1a73e8;
+  color: #1a73e8;
+  box-shadow: 0 1px 3px rgba(26,115,232,.18);
+}
+.mode-chip.active[data-mode="walk"]  { background: #e6f4ea; border-color: #1e8e3e; color: #1e8e3e; box-shadow: 0 1px 3px rgba(30,142,62,.15); }
+.mode-chip.active[data-mode="bike"]  { background: #fef7e0; border-color: #e37400; color: #e37400; box-shadow: 0 1px 3px rgba(227,116,0,.15); }
+.mode-chip.active[data-mode="metro"] { background: #ede7f6; border-color: #7c4dff; color: #7c4dff; box-shadow: 0 1px 3px rgba(124,77,255,.15); }
+.mode-chip.active[data-mode="bus"]   { background: #fce8e6; border-color: #c5221f; color: #c5221f; box-shadow: 0 1px 3px rgba(197,34,31,.15); }
+
+/* Hint line showing resolved mode label */
+.mode-hint {
+  font-size: 11px;
+  color: #80868b;
+  padding: 0 2px;
+  min-height: 14px;
+  transition: color .2s;
+}
+.mode-hint.multimodal {
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+/* Rejected chip — shake + red flash */
+.mode-chip.chip-error {
+  border-color: #c5221f;
+  color: #c5221f;
+  animation: chipShake .35s ease;
+}
+@keyframes chipShake {
+  0%  { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+  100%{ transform: translateX(0); }
+}
 
 /* ==================================================
    LOCATION INPUTS

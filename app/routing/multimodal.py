@@ -301,27 +301,73 @@ def _load_or_download_graph(network_type: str, cache_path: str):
             last_err = e
     raise RuntimeError(f"Failed to download {network_type} graph: {last_err}")
 
+# ── Hardcoded Kolkata landmark coordinates ────────────────────────────────────
+# These are places that Nominatim frequently misresolves (returns wrong country
+# or wrong city) because the name is not unique globally.
+# Checked against Google Maps / OSM — accurate as of 2024.
+_KOLKATA_LANDMARKS: dict[str, tuple[float, float]] = {
+    "ecopark":                (22.5969, 88.4790),   # Eco Tourism Park, New Town
+    "eco park":               (22.5969, 88.4790),
+    "eco tourism park":       (22.5969, 88.4790),
+    "new town":               (22.5890, 88.4700),   # New Town, Rajarhat
+    "rajarhat":               (22.5890, 88.4700),
+    "action area 1":          (22.5870, 88.4710),
+    "action area i":          (22.5870, 88.4710),
+    "new town action area 1": (22.5870, 88.4710),
+    "biswa bangla gate":      (22.5853, 88.4760),   # Gate near Ecopark
+    "airport":                (22.6548, 88.4467),   # NSCBI Airport
+    "dum dum airport":        (22.6548, 88.4467),
+    "netaji airport":         (22.6548, 88.4467),
+    "science city":           (22.5369, 88.3966),   # Science City, EM Bypass
+    "victoria memorial":      (22.5448, 88.3426),
+    "dakshineswar":           (22.6537, 88.3578),
+    "belur math":             (22.6368, 88.3518),
+    "botanical garden":       (22.5622, 88.3072),
+    "acharya jagadish":       (22.5622, 88.3072),
+    "rabindra sarobar":       (22.5091, 88.3509),
+    "dhakuria lake":          (22.5091, 88.3509),
+    "ruby hospital":          (22.5209, 88.3969),
+    "garia":                  (22.4731, 88.3869),
+    "newmarket":              (22.5630, 88.3510),
+    "new market":             (22.5630, 88.3510),
+    "college street":         (22.5796, 88.3634),
+    "china town":             (22.5741, 88.3632),
+    "chinatown":              (22.5741, 88.3632),
+}
+
 
 def _geocode(place: str) -> tuple[float, float]:
     p = (place or "").strip()
     p = p.replace('\u202f', ' ').replace('\xa0', ' ')
     p_clean = re.sub(r'\s+', ' ', re.sub(r'[()]', ' ', p)).strip()
+    p_lower = p_clean.lower()
 
+    # 1. Check hardcoded Kolkata landmarks (avoids Nominatim misresolution)
+    if p_lower in _KOLKATA_LANDMARKS:
+        coords = _KOLKATA_LANDMARKS[p_lower]
+        print(f"  [Route] Landmark match '{place}' -> {coords}")
+        return coords
+    # Partial match against landmark keys
+    for key, coords in _KOLKATA_LANDMARKS.items():
+        if key in p_lower or p_lower in key:
+            print(f"  [Route] Landmark partial match '{place}' -> {coords}")
+            return coords
+
+    # 2. Exact / substring match against metro station names
     for s in METRO_STATIONS:
         s_name_clean = re.sub(r'\s+', ' ', re.sub(r'[()]', ' ', s["name"]).replace('\u202f', ' ').replace('\xa0', ' ')).strip()
-        if s_name_clean.lower() == p_clean.lower() or s["id"].lower() == p_clean.lower():
+        if s_name_clean.lower() == p_lower or s["id"].lower() == p_lower:
             return (s["lat"], s["lon"])
 
     for s in METRO_STATIONS:
         s_name_clean = re.sub(r'\s+', ' ', re.sub(r'[()]', ' ', s["name"]).replace('\u202f', ' ').replace('\xa0', ' ')).strip()
-        if p_clean.lower() in s_name_clean.lower() or s_name_clean.lower() in p_clean.lower():
+        if p_lower in s_name_clean.lower() or s_name_clean.lower() in p_lower:
             return (s["lat"], s["lon"])
 
+    # 3. Fall through to Nominatim with region-anchored query + bbox guard
     from routing.route_engine import _geocode_with_context
     return _geocode_with_context(place)
 
-
-# ── GeoJSON helpers ───────────────────────────────────────────────────────────
 
 def _nodes_to_geojson(graph, nodes, label, dist_km, time_min):
     coords = [[graph.nodes[n]["x"], graph.nodes[n]["y"]] for n in nodes if "x" in graph.nodes[n]]
@@ -826,10 +872,12 @@ def _metro_route(source: str, destination: str, events: list[dict] | None = None
 
     routes_out = []
     for rank, (score, src_stn, dst_stn, path, wk_src, wk_dst) in enumerate(top):
-        n_ic = sum(1 for i in range(1, len(path)) if path[i]["line"] != path[i-1]["line"])
-        if rank == 0:
-            lbl = "Best Metro Route"
-        elif n_ic == 0:
+        _segs = _split_path_by_line(path)
+        n_ic = sum(
+            1 for i in range(1, len(_segs))
+            if _segs[i][0] != _segs[i-1][0]
+        )
+        if n_ic == 0:
             lbl = f"Direct · {path[0]['line'].title()} Line"
         else:
             lbl = f"Via {n_ic} interchange{'s' if n_ic > 1 else ''}"
@@ -874,7 +922,15 @@ def _build_combo_route(
     now = datetime.now(tz=IST)
     combo_mode = f"metro+{feeder_mode}"
     line_segments = _split_path_by_line(path)
-    interchange   = len(line_segments) > 1
+
+    # Count genuine line changes — two adjacent segments on the same physical
+    # line (e.g. BFS routing through a same-name interchange node) should not
+    # count as an interchange.
+    _real_interchanges = sum(
+        1 for i in range(1, len(line_segments))
+        if line_segments[i][0] != line_segments[i-1][0]
+    )
+    interchange = _real_interchanges > 0
 
     # ── OSM-route both feeder legs ────────────────────────────────────────────
     leg1 = _road_route_single_best(source,       src_stn["name"], feeder_mode, speed_kmh)
@@ -912,11 +968,13 @@ def _build_combo_route(
     metro_geojson_segs: list[tuple[str, list[list[float]]]] = []
     journey_segs: list[dict] = []
 
-    journey_segs.append({
-        "type": feeder_mode, "mode": feeder_mode,
-        "from": source, "to": src_stn["name"],
-        "distance_km": leg1_dk, "time_min": leg1_tm, "line": None,
-    })
+    # Only add the first feeder leg when there is meaningful distance to cover.
+    if leg1_dk >= 0.05:
+        journey_segs.append({
+            "type": feeder_mode, "mode": feeder_mode,
+            "from": source, "to": src_stn["name"],
+            "distance_km": leg1_dk, "time_min": leg1_tm, "line": None,
+        })
 
     # Track running clock: user departs origin at `now`, arrives at boarding
     # station after leg1_tm minutes.  Subsequent interchanges accumulate time.
@@ -970,11 +1028,15 @@ def _build_combo_route(
         seg_geo_pts = [[s["lon"], s["lat"]] for s in seg_stns]
         metro_geojson_segs.append((seg_color, seg_geo_pts))
 
-    journey_segs.append({
-        "type": feeder_mode, "mode": feeder_mode,
-        "from": dst_stn["name"], "to": destination,
-        "distance_km": leg2_dk, "time_min": leg2_tm, "line": None,
-    })
+    # Only add the final feeder leg when there is meaningful distance to cover.
+    # If the alighting station is effectively the destination (< 50 m) the leg
+    # would show "Park Street → Park Street · 0 km" — skip it instead.
+    if leg2_dk >= 0.05:
+        journey_segs.append({
+            "type": feeder_mode, "mode": feeder_mode,
+            "from": dst_stn["name"], "to": destination,
+            "distance_km": leg2_dk, "time_min": leg2_tm, "line": None,
+        })
 
     total_km  = round(leg1_dk + metro_km_total + leg2_dk, 2)
     total_min = leg1_tm + metro_min_total + leg2_tm
@@ -1035,7 +1097,7 @@ def _build_combo_route(
         "metro_min": metro_min_total,
         "interchange": interchange, "interchange_note": interchange_note,
         "next_train": next_train_top,
-        "num_interchanges": len(line_segments) - 1,
+        "num_interchanges": _real_interchanges,
         "disruption_flags": disruption_flags,
     }
 
@@ -1069,7 +1131,11 @@ def _build_mixed_combo_route(
     now = datetime.now(tz=IST)
     combo_mode  = "metro+walk+drive"
     line_segments = _split_path_by_line(path)
-    interchange   = len(line_segments) > 1
+    _real_interchanges = sum(
+        1 for i in range(1, len(line_segments))
+        if line_segments[i][0] != line_segments[i-1][0]
+    )
+    interchange = _real_interchanges > 0
 
     # ── OSM-route feeder legs with their respective modes ─────────────────────
     leg1 = _road_route_single_best(source,           src_stn["name"], "walk",  WALK_SPEED)
@@ -1105,11 +1171,12 @@ def _build_mixed_combo_route(
     metro_geojson_segs: list[tuple[str, list[list[float]]]] = []
     journey_segs: list[dict] = []
 
-    journey_segs.append({
-        "type": "walk", "mode": "walk",
-        "from": source, "to": src_stn["name"],
-        "distance_km": leg1_dk, "time_min": leg1_tm, "line": None,
-    })
+    if leg1_dk >= 0.05:
+        journey_segs.append({
+            "type": "walk", "mode": "walk",
+            "from": source, "to": src_stn["name"],
+            "distance_km": leg1_dk, "time_min": leg1_tm, "line": None,
+        })
 
     accumulated_min = leg1_tm
     wait_min_total  = 0
@@ -1145,12 +1212,13 @@ def _build_mixed_combo_route(
         seg_color = LINE_COLORS.get(seg_line, "#7c4dff")
         metro_geojson_segs.append((seg_color, [[s["lon"], s["lat"]] for s in seg_stns]))
 
-    journey_segs.append({
-        "type": "drive", "mode": "drive",
-        "from": dst_stn["name"], "to": destination,
-        "distance_km": leg2_dk, "time_min": leg2_tm, "line": None,
-        "cab_note": "Cab / auto-rickshaw recommended",
-    })
+    if leg2_dk >= 0.05:
+        journey_segs.append({
+            "type": "drive", "mode": "drive",
+            "from": dst_stn["name"], "to": destination,
+            "distance_km": leg2_dk, "time_min": leg2_tm, "line": None,
+            "cab_note": "Cab / auto-rickshaw recommended",
+        })
 
     total_km  = round(leg1_dk + metro_km_total + leg2_dk, 2)
     total_min = leg1_tm + metro_min_total + leg2_tm
@@ -1196,7 +1264,7 @@ def _build_mixed_combo_route(
         "metro_min": metro_min_total,
         "interchange": interchange, "interchange_note": interchange_note,
         "next_train": next_train_top,
-        "num_interchanges": len(line_segments) - 1,
+        "num_interchanges": _real_interchanges,
         "disruption_flags": disruption_flags,
     }
 
@@ -1330,11 +1398,13 @@ def _metro_mixed_route(
 
     routes_out = []
     for rank, (score, s_stn, d_stn, path, wk_src, wk_dst) in enumerate(top):
-        n_ic = sum(1 for i in range(1, len(path)) if path[i]["line"] != path[i-1]["line"])
+        _segs_m = _split_path_by_line(path)
+        n_ic = sum(
+            1 for i in range(1, len(_segs_m))
+            if _segs_m[i][0] != _segs_m[i-1][0]
+        )
         metro_km = round(_path_cost_km(path), 2)
-        if rank == 0:
-            lbl = "Best · Walk+Metro+Cab"
-        elif n_ic == 0:
+        if n_ic == 0:
             lbl = f"Direct {path[0]['line'].title()} · {metro_km} km metro"
         else:
             lbl = f"Via {n_ic} interchange{'s' if n_ic > 1 else ''} · {metro_km} km metro"
@@ -1510,10 +1580,15 @@ def _metro_combo_route(
 
     routes_out = []
     for rank, (score, s_stn, d_stn, path, wk_src, wk_dst) in enumerate(top):
-        n_ic = sum(1 for i in range(1, len(path)) if path[i]["line"] != path[i-1]["line"])
-        if rank == 0:
-            lbl = f"Best · Metro+{feeder_mode.title()}"
-        elif n_ic == 0:
+        # Count real line changes using the same segment splitter used by
+        # _build_combo_route — avoids counting interchange transfer nodes
+        # (same physical station, different line IDs) as a line change.
+        _segs = _split_path_by_line(path)
+        n_ic = sum(
+            1 for i in range(1, len(_segs))
+            if _segs[i][0] != _segs[i-1][0]
+        )
+        if n_ic == 0:
             lbl = f"Direct {path[0]['line'].title()} · {feeder_mode.title()} feeder"
         else:
             lbl = f"Via {n_ic} interchange{'s' if n_ic > 1 else ''} · {feeder_mode.title()} feeder"
@@ -1532,6 +1607,256 @@ def _metro_combo_route(
         "src_coords": list(sc), "dst_coords": list(dc),
         "mode": combo_mode, "routes": routes_out,
     }
+
+
+# ── Walk + Bus combo route ────────────────────────────────────────────────────
+
+def _feeder_bus_route(
+    source: str,
+    destination: str,
+    feeder_mode: str,          # "walk" or "bike"
+) -> dict:
+    """
+    Feeder → Bus → Feeder multimodal route.
+
+    Supports two feeder modes:
+      walk  — 5 km/h, boarding cap ≤ 1.5 km (relaxed to 3 km)
+      bike  — 15 km/h, boarding cap ≤ 4 km   (relaxed to 6 km)
+
+    Algorithm:
+      1. Geocode source and destination.
+      2. Find the nearest bus stop to source  (boarding stop).
+      3. Find the nearest bus stop to destination (alighting stop).
+      4. BFS over the bus graph from boarding → alighting.
+      5. Build three-leg journey:
+           Leg 1: feeder  source → boarding stop   (straight-line at feeder speed)
+           Leg 2: bus     boarding stop → alighting stop  (bus graph path)
+           Leg 3: feeder  alighting stop → destination    (straight-line at feeder speed)
+      6. Package as a route dict with per-segment coloured GeoJSON.
+
+    Falls back gracefully when no bus path exists.
+    """
+    from transit.bus_engine import find_bus_path
+    from transit.bus_overlay import get_path_coordinates
+    from transit.bus_graph import (
+        load_stops,
+        find_nearest_stop,
+        find_nearest_stop_by_name,
+        get_routes_through_stops,
+    )
+
+    assert feeder_mode in ("walk", "bike"), f"Unsupported feeder mode: {feeder_mode}"
+
+    if feeder_mode == "walk":
+        FEEDER_SPEED_KMH = 5.0
+        FEEDER_CAP_KM    = 1.5
+        FEEDER_RELAX_KM  = 3.0
+        FEEDER_COLOR     = "#607D8B"   # grey
+        FEEDER_LABEL     = "Walk"
+    else:  # bike
+        FEEDER_SPEED_KMH = 15.0
+        FEEDER_CAP_KM    = 4.0
+        FEEDER_RELAX_KM  = 6.0
+        FEEDER_COLOR     = "#e37400"   # orange
+        FEEDER_LABEL     = "Bike"
+
+    BUS_SPEED_KMH = 20.0
+    BUS_BOARD_MIN = 3      # boarding buffer (waiting + boarding)
+    mode_str      = f"{feeder_mode}+bus"
+
+    # ── Geocode source / destination ─────────────────────────────────────────
+    sc = _geocode(source)
+    dc = _geocode(destination)
+
+    # ── Resolve nearest bus stops ─────────────────────────────────────────────
+    def _resolve(place: str, coords: tuple[float, float], max_km: float) -> dict | None:
+        hit = find_nearest_stop_by_name(place)
+        if hit:
+            return hit
+        return find_nearest_stop(coords[0], coords[1], max_distance_km=max_km)
+
+    src_stop = _resolve(source,      sc, FEEDER_CAP_KM)
+    dst_stop = _resolve(destination, dc, FEEDER_CAP_KM)
+
+    # Relax cap if nothing found
+    if src_stop is None:
+        src_stop = find_nearest_stop(sc[0], sc[1], max_distance_km=FEEDER_RELAX_KM)
+    if dst_stop is None:
+        dst_stop = find_nearest_stop(dc[0], dc[1], max_distance_km=FEEDER_RELAX_KM)
+
+    if src_stop is None or dst_stop is None:
+        missing = source if src_stop is None else destination
+        return {
+            "source": source, "destination": destination,
+            "src_coords": list(sc), "dst_coords": list(dc),
+            "mode": mode_str, "routes": [],
+            "metro_note": (
+                f"No bus stop found within {FEEDER_RELAX_KM} km of '{missing}'. "
+                "Try a well-known landmark or switch to a different mode."
+            ),
+        }
+
+    src_stop_coords = (src_stop["lat"], src_stop["lon"])
+    dst_stop_coords = (dst_stop["lat"], dst_stop["lon"])
+
+    # ── Feeder legs ───────────────────────────────────────────────────────────
+    feeder1_km  = round(_haversine_km(sc[0], sc[1], *src_stop_coords), 3)
+    feeder2_km  = round(_haversine_km(*dst_stop_coords, dc[0], dc[1]), 3)
+    feeder1_min = round((feeder1_km / FEEDER_SPEED_KMH) * 60)
+    feeder2_min = round((feeder2_km / FEEDER_SPEED_KMH) * 60)
+
+    # ── BFS bus path ─────────────────────────────────────────────────────────
+    path      = find_bus_path(src_stop["stop_id"], dst_stop["stop_id"])
+    all_stops = load_stops()
+
+    # ── Fallback: no bus path found ───────────────────────────────────────────
+    if path is None or len(path) < 2:
+        straight_bus_km = _haversine_km(*src_stop_coords, *dst_stop_coords)
+        total_km  = round(feeder1_km + straight_bus_km + feeder2_km, 2)
+        total_min = (feeder1_min
+                     + round((straight_bus_km / BUS_SPEED_KMH) * 60)
+                     + feeder2_min + BUS_BOARD_MIN)
+        geo = _straight_geojson([sc, dc], f"{FEEDER_LABEL}+Bus (estimate)", total_km, total_min)
+        return {
+            "source": source, "destination": destination,
+            "src_coords": list(sc), "dst_coords": list(dc),
+            "mode": mode_str,
+            "routes": [{
+                "id": 0, "label": f"{FEEDER_LABEL} + Bus (estimate)",
+                "road_names": [src_stop["name"], dst_stop["name"]],
+                "distance_km": total_km, "travel_time_min": total_min,
+                "geojson": geo, "coords": [list(sc), list(dc)],
+                "mode": mode_str, "segments": [],
+                "bus_note": (
+                    f"No direct bus connection between '{src_stop['name']}' "
+                    f"and '{dst_stop['name']}'. Showing straight-line estimate."
+                ),
+            }],
+        }
+
+    # ── Build bus leg geometry ────────────────────────────────────────────────
+    bus_coord_pairs = get_path_coordinates(path)   # [[lat, lon], ...]
+
+    bus_km = 0.0
+    for i in range(len(bus_coord_pairs) - 1):
+        bus_km += _haversine_km(
+            bus_coord_pairs[i][0],   bus_coord_pairs[i][1],
+            bus_coord_pairs[i+1][0], bus_coord_pairs[i+1][1],
+        )
+    bus_km  = round(bus_km, 2)
+    bus_min = round((bus_km / BUS_SPEED_KMH) * 60) + BUS_BOARD_MIN
+
+    total_km  = round(feeder1_km + bus_km + feeder2_km, 2)
+    total_min = feeder1_min + bus_min + feeder2_min
+
+    # ── Matching bus route names ──────────────────────────────────────────────
+    matching_routes = get_routes_through_stops([path[0], path[-1]])
+    bus_label = matching_routes[0]["route_name"] if matching_routes else \
+                f"Bus · {src_stop['name']} → {dst_stop['name']}"
+
+    stop_names = [all_stops[sid]["name"] for sid in path if sid in all_stops]
+
+    # ── Per-segment coloured GeoJSON ──────────────────────────────────────────
+    feeder1_geo = [[sc[1],               sc[0]],
+                   [src_stop_coords[1],  src_stop_coords[0]]]
+    bus_geo     = [[c[1], c[0]] for c in bus_coord_pairs]
+    feeder2_geo = [[dst_stop_coords[1],  dst_stop_coords[0]],
+                   [dc[1],               dc[0]]]
+
+    features = []
+    if feeder1_km > 0.05:
+        features.append({
+            "type": "Feature",
+            "geometry": {"type": "LineString", "coordinates": feeder1_geo},
+            "properties": {
+                "segment": feeder_mode, "color": FEEDER_COLOR,
+                "label": f"{FEEDER_LABEL} to {src_stop['name']}",
+            },
+        })
+    features.append({
+        "type": "Feature",
+        "geometry": {"type": "LineString", "coordinates": bus_geo},
+        "properties": {"segment": "bus", "color": "#FF5722", "label": bus_label},
+    })
+    if feeder2_km > 0.05:
+        features.append({
+            "type": "Feature",
+            "geometry": {"type": "LineString", "coordinates": feeder2_geo},
+            "properties": {
+                "segment": feeder_mode, "color": FEEDER_COLOR,
+                "label": f"{FEEDER_LABEL} to {destination}",
+            },
+        })
+
+    geojson = {"type": "FeatureCollection", "features": features}
+
+    all_coords = (
+        [[sc[0], sc[1]]]
+        + ([[src_stop_coords[0], src_stop_coords[1]]] if feeder1_km > 0.05 else [])
+        + bus_coord_pairs
+        + ([[dst_stop_coords[0], dst_stop_coords[1]]] if feeder2_km > 0.05 else [])
+        + [[dc[0], dc[1]]]
+    )
+
+    # ── Journey segments for panel breakdown ──────────────────────────────────
+    segments: list[dict] = [
+        {
+            "type":        feeder_mode,
+            "from":        source,
+            "to":          src_stop["name"],
+            "distance_km": feeder1_km,
+            "time_min":    feeder1_min,
+        },
+        {
+            "type":            "bus",
+            "from":            src_stop["name"],
+            "to":              dst_stop["name"],
+            "distance_km":     bus_km,
+            "time_min":        bus_min,
+            "bus_label":       bus_label,
+            "num_stops":       len(path) - 1,
+            "matching_routes": matching_routes,
+        },
+        {
+            "type":        feeder_mode,
+            "from":        dst_stop["name"],
+            "to":          destination,
+            "distance_km": feeder2_km,
+            "time_min":    feeder2_min,
+        },
+    ]
+
+    return {
+        "source": source, "destination": destination,
+        "src_coords": list(sc), "dst_coords": list(dc),
+        "mode": mode_str,
+        "routes": [{
+            "id":              0,
+            "label":           f"{FEEDER_LABEL} + {bus_label}",
+            "road_names":      stop_names,
+            "distance_km":     total_km,
+            "travel_time_min": total_min,
+            "geojson":         geojson,
+            "coords":          all_coords,
+            "mode":            mode_str,
+            "segments":        segments,
+            "bus_stops":       stop_names,
+            "num_stops":       len(path) - 1,
+            "src_stop":        src_stop["name"],
+            "dst_stop":        dst_stop["name"],
+            "matching_routes": matching_routes,
+        }],
+    }
+
+
+def _walk_bus_route(source: str, destination: str) -> dict:
+    """Walk → Bus → Walk. Thin wrapper around _feeder_bus_route."""
+    return _feeder_bus_route(source, destination, feeder_mode="walk")
+
+
+def _bike_bus_route(source: str, destination: str) -> dict:
+    """Bike → Bus → Bike. Thin wrapper around _feeder_bus_route."""
+    return _feeder_bus_route(source, destination, feeder_mode="bike")
 
 
 # ── Bus route ─────────────────────────────────────────────────────────────────
@@ -1740,7 +2065,15 @@ def get_routes_for_modes(
         return get_routes_for_mode(source, destination, modes[0], events=events)
     if len(modes) == 2:
         if "metro" not in modes:
-            raise ValueError("Two-mode routing supports only metro + walk/bike/drive.")
+            # feeder+bus combos: walk+bus and bike+bus
+            if set(modes) == {"walk", "bus"}:
+                return _walk_bus_route(source, destination)
+            if set(modes) == {"bike", "bus"}:
+                return _bike_bus_route(source, destination)
+            raise ValueError(
+                "Two-mode routing supports metro + walk/bike/drive, "
+                "walk + bus, or bike + bus."
+            )
         feeder = next(m for m in modes if m != "metro")
         return _metro_combo_route(source, destination, feeder, events=events)
     if len(modes) == 3:

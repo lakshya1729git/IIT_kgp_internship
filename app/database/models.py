@@ -54,6 +54,12 @@ class TrafficEvent(Base):
     llm_confidence  = Column(Float,       nullable=True)               # raw LLM κ
     source_reliability = Column(Float,    nullable=True)               # source score
 
+    # ── Human-verified ground truth — used for HGNN training ─────────────────
+    # Set via the label_events.py / auto_label.py scripts.
+    # When present, graph_builder.py uses this instead of the LLM severity
+    # and the trainer gives these rows VERIFIED_LABEL_WEIGHT × higher loss.
+    verified_severity = Column(String(10), nullable=True)  # "low"/"medium"/"high"
+
     # ── HGNN-adjusted outputs — stored for training feedback loop ─────────────
     # Comparing pre/post HGNN values over time lets us validate whether the
     # graph adjustments are moving in the right direction.
@@ -109,6 +115,7 @@ def _migrate_add_columns():
         ("hgnn_severity",      "VARCHAR(10)"),
         ("hgnn_multiplier",    "REAL"),
         ("severity_corrected", "BOOLEAN DEFAULT 0"),
+        ("verified_severity",  "VARCHAR(10)"),
     ]
     try:
         with engine.connect() as conn:
