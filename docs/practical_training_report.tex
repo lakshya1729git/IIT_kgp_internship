@@ -1,0 +1,738 @@
+% --- Document Preamble ---
+
+\documentclass[12pt, a4paper]{report}
+
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{-1.8cm}
+
+    \LARGE \textbf{PRACTICAL TRAINING REPORT-2026}
+
+    \includegraphics[width=0.4\textwidth]{Rajasthan_Technical_University_logo.jpg}
+
+    \vspace{0.3cm}
+    \par
+    \vspace{0.05cm}
+    \large \textbf{Session : 2026-2027}
+
+    \vspace{1cm}
+    \Large \textbf{SUBMITTED BY}
+    \vspace{0.5cm}
+
+\begin{tabular}{p{5cm} p{0.2cm} p{6cm}}
+    \normalsize\textbf{NAME}          & : & \large\MakeUppercase{Lakshya Sharma} \\[0.1cm]
+    \large\textbf{Internship Roll No.} & : & \large 2026T078916418013 \\[0.1cm]
+    \large\textbf{College Roll No.}   & : & \large 23EUCCS124 \\[0.1cm]
+    \large\textbf{Course}             & : & \large B.Tech. \\[0.1cm]
+    \large\textbf{Branch}             & : & \large Computer Science \& Engineering \\[0.1cm]
+    \large\textbf{Contact Number}     & : & \large 9001711027 \\
+\end{tabular}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+    \hline
+    \multirow{3}{*}{\large\textbf{\shortstack{Training \\ Period}}} &
+    \multicolumn{2}{c|}{\large\textbf{Date of Training Program}} &
+    \multirow{3}{*}{\large\textbf{\shortstack{Duration of \\ Practical Training}}} \\
+    \cline{2-3}
+    & \textbf{From} & \textbf{To} & \\
+    \cline{2-4}
+    & 15/05/2026 & 30/06/2026 & 45 days \\
+    \hline
+\end{tabular}
+\end{center}
+
+    \vfill
+
+    \Large \textbf{Indian Institute of Technology}
+    \par
+    \Large \textbf{Kharagpur}
+
+\end{titlepage}
+
+\input{table_of_contents_specimen.tex}
+\clearpage
+
+% -------------------------------------------------------------------
+\section*{ACKNOWLEDGEMENTS}
+\addcontentsline{toc}{section}{ACKNOWLEDGEMENTS}
+
+It is with great pleasure and gratitude that I present this report on the work carried out during my Summer Research Internship at the Transportation Engineering Division, Department of Civil Engineering, Indian Institute of Technology Kharagpur. This internship provided me with a unique opportunity to contribute to cutting-edge research at the intersection of Artificial Intelligence, Intelligent Transportation Systems, Geospatial Analytics, and Urban Mobility.
+
+I express my sincere gratitude to \textbf{Dr. Nandan Maiti}, Assistant Professor, Transportation Engineering Division, IIT Kharagpur, for providing me the opportunity to be a part of this research project. His constant guidance, technical insights, and encouragement have been invaluable throughout the internship. His vision towards applying Artificial Intelligence and data-driven methodologies to real-world transportation challenges greatly influenced my understanding of research-oriented problem solving.
+
+I am also thankful to the research scholars and team members of the Transportation Engineering Laboratory for their support, discussions, and valuable suggestions during the development of the \textit{Contextual Probabilistic AI-Enabled Multimodal Trip Planning System}. In particular, I thank \textbf{Nikhil Kumar}, the lead developer of the traffic-ai codebase, whose technical handoff documentation and architectural guidance formed an essential foundation for my contributions to the project.
+
+I would like to express my gratitude to the Department of Civil Engineering and Indian Institute of Technology Kharagpur for providing an excellent research environment and access to the resources necessary for carrying out this work.
+
+I am deeply thankful to the faculty members of the Department of Computer Science and Engineering, Rajasthan Technical University, Kota, for providing the academic foundation that enabled me to contribute effectively to this research project.
+
+Finally, I would like to thank my family and friends for their continuous encouragement, motivation, and unwavering support throughout this internship.
+
+\vspace{1.5cm}
+\begin{flushright}
+\Large \textbf{Lakshya Sharma} \\
+\normalsize Rajasthan Technical University, Kota
+\end{flushright}
+
+\clearpage
+
+% -------------------------------------------------------------------
+\section*{PREFACE}
+\addcontentsline{toc}{section}{PREFACE}
+
+This report presents the work carried out during my Summer Research Internship at the Transportation Engineering Division, Department of Civil Engineering, Indian Institute of Technology Kharagpur, under the guidance of \textbf{Dr. Nandan Maiti}. The internship provided an opportunity to contribute to an interdisciplinary research project that combines Artificial Intelligence, Geospatial Computing, Intelligent Transportation Systems, and Data Analytics to address real-world urban mobility challenges.
+
+The primary objective of the project is to develop a \textit{Contextual Probabilistic AI-Enabled Multimodal Trip Planning System} — referred to internally as \textbf{traffic-ai} — capable of generating intelligent route recommendations by incorporating multiple contextual factors such as live traffic disruptions, weather conditions, public transportation networks, and transportation events extracted from unstructured information sources. Unlike conventional navigation systems that primarily focus on minimising travel time or distance, the proposed framework aims to provide anticipatory, risk-aware, and explainable transportation recommendations.
+
+The work carried out during the internship involved contributing to several core system components: route generation using OpenStreetMap and the OSMnx library, weather-aware route risk assessment using OpenWeatherMap APIs, Large Language Model (LLM) based disruption intelligence extraction via LangChain, metro network integration for Kolkata's five metro lines, Bayesian probabilistic data fusion, and bus transit network modelling. The system is being validated on the Kolkata city-scale transportation network, with active collaboration from the Kolkata Traffic Police.
+
+This report documents the underlying motivation, literature review, system architecture, implementation methodology, contributions made during each week of the internship, and future directions of the project.
+
+\clearpage
+
+% ===================================================================
+\chapter{Introduction}
+\label{chap:introduction}
+% ===================================================================
+
+\section{Background and Motivation}
+
+Urban transportation systems are becoming increasingly complex due to rapid urbanisation, growing travel demand, multimodal transportation networks, and frequent disruptions caused by weather conditions, public events, infrastructure activities, accidents, and socio-economic factors. Major metropolitan cities such as Kolkata experience highly dynamic traffic conditions that significantly affect travel reliability, commuter experience, and transportation efficiency.
+
+Navigation platforms such as Google Maps and Apple Maps have become essential tools for daily travel. These systems primarily rely on structured transportation data — traffic speeds, historical travel patterns, GPS trajectories, and public transport schedules. While effective under normal conditions, they struggle to anticipate disruptions before those effects become visible in the transportation network.
+
+A significant volume of transportation-relevant information is continuously generated through traffic advisories, weather alerts, news reports, road closure announcements, and public event notifications. Much of this information becomes available \textit{before} its impact is reflected in traditional traffic datasets. However, existing routing systems rarely utilise such contextual information effectively.
+
+This internship focuses on contributing to an intelligent framework that transforms contextual information from unstructured sources into actionable mobility intelligence, supporting future-aware and disruption-aware transportation planning for Kolkata.
+
+\section{Problem Statement}
+
+Current navigation systems operate using reactive approaches. Route recommendations are updated only after congestion or disruptions have already emerged within the network. Consequently, commuters frequently encounter:
+
+\begin{itemize}
+    \item Unreliable travel time estimates.
+    \item Unexpected delays caused by incidents and weather events.
+    \item Limited multimodal transportation recommendations.
+    \item Poor anticipation of future disruptions.
+    \item Lack of transparency regarding routing decisions.
+\end{itemize}
+
+The central research question addressed by the project is:
+
+\textit{``How can contextual urban information be transformed into actionable mobility intelligence to enable proactive, user-specific, and explainable multimodal transportation planning under uncertain urban conditions?''}
+
+\section{Limitations of Existing Approaches}
+
+Existing trip-planning systems primarily depend on structured transportation datasets and deterministic shortest-path algorithms. Although these perform reasonably well under recurrent traffic conditions, they possess several limitations:
+
+\begin{itemize}
+    \item Limited utilisation of unstructured information sources (news, advisories, social media).
+    \item Reactive rather than anticipatory route planning.
+    \item Inability to incorporate future events into routing decisions.
+    \item Lack of explicit uncertainty modelling.
+    \item Limited explainability and user trust.
+    \item Insufficient consideration of multimodal transportation interactions.
+\end{itemize}
+
+\section{Research Objectives}
+
+The primary objective of the project is to develop a Contextual Probabilistic AI-Enabled Multimodal Trip Planning System. The specific objectives include:
+
+\begin{itemize}
+    \item Extract transportation-relevant events from unstructured data sources using Large Language Models (LLMs).
+    \item Integrate traffic, weather, public transportation, and contextual intelligence within a unified framework.
+    \item Develop probabilistic methodologies for uncertainty-aware mobility analysis.
+    \item Construct risk-aware multimodal routing algorithms.
+    \item Generate explainable route recommendations for commuters and transportation authorities.
+    \item Support proactive congestion management and event-driven rerouting.
+\end{itemize}
+
+\section{Research Context}
+
+The project is being developed as part of an ANRF ARG (Anusandhan National Research Foundation — Applied Research Grant) pre-proposal submitted by IIT Kharagpur, titled:
+
+\textit{``A Probabilistic and Explainable Tool for Context-Aware Multimodal Trip Planning Using Generative Artificial Intelligence (GenAI)''}
+
+The system is being piloted on the Kolkata transportation network with active industry collaboration from the Kolkata Traffic Police. The three core research hypotheses guiding the project are:
+
+\begin{itemize}
+    \item \textbf{H1:} LLM-derived contextual information improves disruption detection accuracy over structured-data-only systems.
+    \item \textbf{H2:} Probabilistic and risk-aware routing improves travel time reliability.
+    \item \textbf{H3:} Explainable routing outputs enhance user trust.
+\end{itemize}
+
+\section{Overview of the System Architecture}
+
+The system, referred to as \textbf{traffic-ai}, is structured into three processing layers:
+
+\begin{enumerate}
+    \item \textbf{Layer 1 — LLM Disruption Intelligence:} Extracts structured disruption events from unstructured news, RSS feeds, and live traffic APIs. Outputs severity $\sigma$ and confidence $\kappa$ per event. Includes a Heterogeneous Graph Neural Network (HGNN) that refines confidence scores using city-wide graph context. \textit{(Complete)}
+    \item \textbf{Layer 2 — Bayesian Probabilistic Fusion:} Combines Layer 1 signals with time-of-day priors and HGNN road disruption probabilities to compute a posterior disruption probability per road edge. \textit{(Complete)}
+    \item \textbf{Layer 3 — Risk-Aware Routing and Explainability:} Implements a generalised edge cost function combining travel time, reliability, disruption risk, emissions, and transfer penalties for CVaR-optimal multimodal route selection. \textit{(In progress)}
+\end{enumerate}
+
+\section{Scope of Work During the Internship}
+
+During this internship, contributions were made to the following areas:
+
+\begin{itemize}
+    \item Understanding and extending the LLM-based disruption extraction pipeline.
+    \item Weather-aware route risk assessment using OpenWeatherMap.
+    \item Bayesian probabilistic fusion of disruption signals (Layer 2 implementation).
+    \item Metro network integration for all five Kolkata Metro lines.
+    \item Multimodal routing orchestration (drive, walk, bike, metro, bus).
+    \item Bus transit network modelling, graph construction, and map overlay.
+    \item API development and frontend integration.
+\end{itemize}
+
+\clearpage
+
+% ===================================================================
+\chapter{Week 1: Project Orientation and System Architecture}
+\label{chap:week1}
+% ===================================================================
+
+\section{Introduction to the Research Project}
+
+The first week of the internship was dedicated to gaining a thorough understanding of the traffic-ai system — its research context, architectural design, codebase structure, and the specific technical problems it addresses. The week involved studying the project documentation, setting up the development environment, and developing familiarity with all existing components.
+
+\subsection{Development Environment Setup}
+
+The development environment was configured on a local machine following the project's setup instructions:
+
+\begin{enumerate}
+    \item The repository was cloned from the project's GitHub repository.
+    \item A Python 3.11 virtual environment was created and activated.
+    \item All dependencies from \texttt{req.txt} were installed, including FastAPI, OSMnx, LangChain, SQLAlchemy, and related libraries.
+    \item API keys were configured in the \texttt{.env} file, including OpenRouter (for LLM access) and TomTom (for live traffic incidents).
+    \item The FastAPI server was launched using \texttt{uvicorn api:app --port 8000 --reload} from within the \texttt{app/} directory.
+    \item The Kolkata OSM road graph was downloaded from OpenStreetMap on the first run and cached locally as a pickle file.
+\end{enumerate}
+
+\subsection{Understanding the Two-Step API Design}
+
+A key architectural insight studied during Week 1 was the two-step API design, which separates fast route computation from slow disruption analysis. This separation is critical for user experience:
+
+\begin{itemize}
+    \item \textbf{Step 1 — POST /api/route (~2 seconds):} OSMnx computes 2--3 alternative routes on the cached Kolkata road graph and returns GeoJSON immediately. The map renders routes in green before any disruption data is available.
+    \item \textbf{Step 2 — POST /api/disruptions (~30--60 seconds, background):} The system fetches live data from TomTom, Google News RSS, NewsAPI, weather APIs, and official advisory scrapers. The LLM extracts disruption events. Routes are then scored and the map updates with colour-coded risk overlays and event markers.
+\end{itemize}
+
+This design ensures the user sees the route map immediately and never waits at a blank screen.
+
+\section{Data Ingestion Architecture}
+
+A significant part of Week 1 involved understanding the multi-source data ingestion pipeline. The system draws from the following sources:
+
+\begin{longtable}{|p{4cm}|p{3cm}|p{5cm}|}
+\hline
+\textbf{Source} & \textbf{Type} & \textbf{Purpose} \\
+\hline
+TomTom Traffic Incidents API v5 & Structured (live) & Real-time incidents with GPS coordinates, free tier 2500 req/day \\
+\hline
+Google News RSS (\texttt{when:2d}) & Unstructured & City-wide disruption news, scoped to last 2 days \\
+\hline
+NewsAPI & Unstructured & Per-road keyword articles, last 24 hours \\
+\hline
+OpenWeatherMap & Structured (live) & Weather conditions for route risk assessment \\
+\hline
+Kolkata Police (via RSS) & Unstructured & Official traffic advisories \\
+\hline
+KMRC (metro authority) & Unstructured & Metro service disruption notices \\
+\hline
+WB Disaster Management & Unstructured & Flood and cyclone alerts \\
+\hline
+Indian Railways (erail.in) & Structured & Train delay data at Howrah and Sealdah \\
+\hline
+KMC Waterlogging (via RSS) & Unstructured & Waterlogging reports \\
+\hline
+\end{longtable}
+
+\section{LLM Extraction Pipeline}
+
+The LLM extraction pipeline was studied in depth. Each article from the ingestion layer passes through a pre-filter (checking age, geography, and traffic relevance) before being sent to the LangChain LCEL chain. The chain uses \texttt{with\_structured\_output(TrafficEventSchema)} to extract a typed Pydantic object from each article. The schema captures:
+
+\begin{itemize}
+    \item \textbf{event\_type:} One of thirteen categories (accident, congestion, road\_closure, construction, protest, weather, waterlogging, vip\_movement, metro\_disruption, train\_delay, transport\_strike, diversion, unknown).
+    \item \textbf{severity $\sigma$:} Low (score 2), Medium (score 5), or High (score 10).
+    \item \textbf{confidence $\kappa$:} A value in [0, 1] representing extraction certainty, further adjusted by source reliability and event age.
+    \item \textbf{location:} Mandatory field. Events without a resolvable location are discarded or retried with a focused location-recovery prompt.
+    \item \textbf{is\_future\_event:} Distinguishes planned future disruptions from current active ones.
+    \item \textbf{impact\_duration\_mins:} Estimated duration of the disruption.
+\end{itemize}
+
+\section{Risk Scoring Formula}
+
+The route scoring system was studied and understood in detail:
+
+\[
+\text{weighted\_score} = \sigma \times \kappa \times d_m \times r_m
+\]
+
+where $d_m$ is a duration multiplier (1.0--2.0 based on estimated disruption length) and $r_m$ is a recency multiplier (1.0--0.5 based on event age). The route risk is the sum of weighted scores across all matched active events:
+
+\[
+\text{route\_risk} = \sum_{\text{event} \in \text{matched}} \text{weighted\_score}_{\text{event}}
+\]
+
+Risk levels are classified as: CRITICAL ($\geq 25$), HIGH ($\geq 12$), MODERATE ($\geq 5$), LOW ($> 0$), and CLEAR ($= 0$). The best route is chosen as the one minimising $\text{travel\_time} \times (1 + \text{risk\_score}/10)$.
+
+\textbf{Week 1 Conclusion:} The development environment was fully configured and the entire system architecture — data ingestion, LLM extraction, risk scoring, and two-step API design — was thoroughly understood. This foundation enabled productive contributions to the codebase from Week 2 onwards.
+
+\clearpage
+
+% ===================================================================
+\chapter{Week 2: Weather Intelligence and Metro Network Integration}
+\label{chap:week2}
+% ===================================================================
+
+\section{Weather-Aware Route Risk Assessment}
+
+The second week focused on implementing and integrating weather intelligence into the route risk assessment pipeline. Weather is a critical factor for urban mobility in Kolkata, particularly during the monsoon season, where waterlogging, reduced visibility, and cyclonic conditions significantly degrade route reliability.
+
+\subsection{Route Weather Sampling}
+
+Rather than attaching a single city-level weather condition to all routes, the system samples weather at multiple points along each route. The module \texttt{app/weather/route\_weather.py} implements this by:
+
+\begin{enumerate}
+    \item Extracting coordinate points at regular intervals along a route's GeoJSON geometry.
+    \item Querying the OpenWeatherMap Current Weather API for each sampled point.
+    \item Returning a structured weather observation per point, including temperature, wind speed, precipitation, and weather condition code.
+\end{enumerate}
+
+This approach ensures that routes passing through different geographic zones (e.g., coastal areas versus inland roads) receive distinct weather assessments rather than a uniform city-wide score.
+
+\subsection{Weather Severity Index (WSI)}
+
+The \texttt{app/weather/weather\_risk.py} module implements the Weather Severity Index (WSI), which converts raw weather observations into a scalar route-level risk score:
+
+\begin{itemize}
+    \item \textbf{Precipitation:} Heavy rain ($>$ 10mm/hour) contributes significantly to the WSI, as it causes waterlogging on Kolkata roads.
+    \item \textbf{Wind Speed:} Cyclonic wind speeds contribute to route risk due to falling infrastructure and disrupted visibility.
+    \item \textbf{Weather Condition Code:} Thunderstorm, fog, and heavy snow conditions from the OpenWeatherMap classification are mapped to multiplicative risk factors.
+    \item \textbf{Visibility:} Low visibility conditions are penalised in the WSI calculation.
+\end{itemize}
+
+The final WSI is a value in [0, 10] that is presented alongside the disruption risk score for each route, giving commuters a combined risk picture.
+
+\section{Kolkata Metro Network Integration}
+
+A major contribution during Week 2 was the integration of the complete Kolkata Metro network into the routing system. This extended the system beyond road-only routing to support metro as a first-class transport mode.
+
+\subsection{Metro Network Data}
+
+The Kolkata Metro system consists of five operational lines:
+
+\begin{itemize}
+    \item \textbf{Blue Line (Line 1):} North--South corridor from Dakshineswar to Kavi Subhas.
+    \item \textbf{Green Line (Line 2):} East--West corridor from Howrah Maidan to Salt Lake Sector V.
+    \item \textbf{Purple Line (Line 3):} Joka to Taratala (Phase 1 operational).
+    \item \textbf{Orange Line (Line 4):} New Garia to Airport (under phased commissioning).
+    \item \textbf{Yellow Line (Line 5):} Noapara to Barasat corridor.
+\end{itemize}
+
+All stations across all five lines were encoded with geographic coordinates in the \texttt{app/routing/metro\_timetable.py} module. Each line is represented as an ordered sequence of stations, supporting BFS-based route finding with interchange handling at transfer stations.
+
+\subsection{Metro Timetable and Next-Train Computation}
+
+The \texttt{metro\_timetable.py} module also implements real-time timetable support:
+
+\begin{itemize}
+    \item First train, last train, and headway (frequency) are defined per line and direction.
+    \item The \texttt{next\_trains\_at\_station()} function computes the next $n$ departures at any station using the current Indian Standard Time (IST), allowing the frontend to display live next-train information.
+    \item A dedicated API endpoint \texttt{GET /api/next-metro/\{station\_name\}} was developed to serve this data to the frontend.
+\end{itemize}
+
+\subsection{Multimodal Metro Routing}
+
+The \texttt{app/routing/multimodal.py} module orchestrates multimodal journeys involving metro:
+
+\begin{itemize}
+    \item \textbf{metro+walk:} The nearest metro stations to the origin and destination are found, OSMnx computes walking legs to and from those stations, and the metro route between them is computed via BFS graph traversal.
+    \item \textbf{metro+bike} and \textbf{metro+drive:} Similar logic but using cycling or driving graphs for the access/egress legs.
+    \item The complete journey is returned as a sequence of \textit{segments}, each with its own mode, distance, travel time, and GeoJSON geometry.
+\end{itemize}
+
+A GeoJSON overlay for all metro lines and stations is served at \texttt{GET /api/metro-overlay}, allowing the frontend Leaflet map to display the metro network as a persistent layer.
+
+\textbf{Week 2 Conclusion:} Weather-aware route risk assessment was integrated into the pipeline through a route-sampling approach, producing a per-route Weather Severity Index. The complete five-line Kolkata Metro network was integrated as a routing mode with full timetable support, real-time next-train computation, and multimodal journey segment construction.
+
+\clearpage
+
+% ===================================================================
+\chapter{Week 3: Bayesian Probabilistic Fusion and HGNN Integration}
+\label{chap:week3}
+% ===================================================================
+
+\section{Layer 2 — Bayesian Probabilistic Fusion}
+
+The third week was dedicated to implementing Layer 2 of the system architecture: Bayesian probabilistic fusion of disruption signals. Layer 1 produces a weighted score $\sigma \times \kappa$ per event. Layer 2 converts these signals into a proper posterior disruption probability per road edge using Bayes' rule, as specified in Equation~1 of the research proposal.
+
+\subsection{Theoretical Framework}
+
+The Bayesian update for road edge $e$ at time $t$ is defined as:
+
+\[
+\pi_e^{\text{post}}(t) = \frac{p(S \mid Z_e=1) \cdot \pi_e^{\text{prior}}(t)}
+                              {\sum_{z=0}^{1} p(S \mid Z_e=z) \cdot \pi_e^{\text{prior}}(t)}
+\]
+
+where:
+\begin{itemize}
+    \item $Z_e(t)$ is the binary disruption state for road edge $e$.
+    \item $\pi_e^{\text{prior}}(t)$ is the baseline disruption probability, derived from time-of-day patterns.
+    \item $S$ represents the Layer 1 signals: severity score $\sigma$ and confidence $\kappa$.
+    \item $\pi_e^{\text{post}}(t)$ is the posterior disruption probability, output to Layer 3.
+\end{itemize}
+
+\subsection{Time-of-Day Prior}
+
+The prior $\pi_e^{\text{prior}}(t)$ captures the empirical baseline disruption probability for Kolkata road segments as a function of hour. The priors were estimated based on typical Kolkata traffic patterns:
+
+\begin{itemize}
+    \item \textbf{Off-peak hours (midnight--5am):} prior $\approx$ 0.01--0.03
+    \item \textbf{Morning rush (7am--10am):} prior $\approx$ 0.12--0.20
+    \item \textbf{Midday (10am--4pm):} prior $\approx$ 0.12--0.15
+    \item \textbf{Evening rush (5pm--7pm):} prior $\approx$ 0.18--0.22
+    \item \textbf{Late evening (8pm--11pm):} prior $\approx$ 0.06--0.14
+\end{itemize}
+
+\subsection{Likelihood Ratios}
+
+The likelihood ratio $p(S \mid Z_e=1) / p(S \mid Z_e=0)$ quantifies how much more likely a given signal is when a disruption is present. Values were assigned per severity category:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Severity} & \textbf{Likelihood Ratio} \\
+\hline
+High ($\sigma = 10$)   & 8.0 \\
+Medium ($\sigma = 5$)  & 4.0 \\
+Low ($\sigma = 2$)     & 2.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+The likelihood ratio is further scaled by confidence $\kappa$ to reflect that a high-confidence signal provides stronger evidence than a low-confidence one.
+
+\subsection{HGNN Blending}
+
+The posterior from the Bayesian update is blended with the road disruption probability predicted by the Heterogeneous Graph Neural Network (HGNN):
+
+\[
+\pi_e^{\text{final}} = (1 - w_{\text{HGNN}}) \cdot \pi_e^{\text{post}} + w_{\text{HGNN}} \cdot \pi_e^{\text{HGNN}}
+\]
+
+with $w_{\text{HGNN}} = 0.30$. This ensures that the HGNN's spatial graph context (multi-source corroboration, neighbouring road conditions) meaningfully influences the posterior while keeping the Bayesian signal dominant.
+
+\subsection{Implementation: fuse\_route\_disruptions()}
+
+The core function \texttt{fuse\_route\_disruptions(road\_names, events)} in \texttt{app/fusion/bayesian\_fusion.py} computes posterior probabilities for all road segments on a route:
+
+\begin{enumerate}
+    \item Layer 1 signals (severity, confidence) are matched to route roads by name.
+    \item If events are provided from the live run, they are used directly; otherwise, the function queries the \texttt{traffic\_events.db} SQLite database for recent signals.
+    \item HGNN road disruption probabilities are fetched if available.
+    \item The Bayesian update is computed per road, then blended with the HGNN probability.
+    \item Roads with no matched events receive the time-of-day prior only.
+\end{enumerate}
+
+The function returns a dictionary mapping road names to posterior probabilities, which is consumed by the route scoring and Layer 3 cost function.
+
+\section{HGNN — Temporal Heterogeneous Attention Network}
+
+\subsection{Architecture Overview}
+
+The HGNN module (\texttt{app/hgnn/}) implements a Temporal Heterogeneous Attention Network (HAN) that models the city-wide spatial and source-correlation structure of disruption events. The heterogeneous graph contains four node types:
+
+\begin{itemize}
+    \item \textbf{Event nodes:} One per extracted traffic event, featuring severity, confidence, event type, age, and temporal encoding.
+    \item \textbf{Road nodes:} One per unique road segment, featuring historical disruption rate and rush-hour ratio.
+    \item \textbf{Source nodes:} One per data source (TomTom, RSS, NewsAPI, etc.), featuring reliability score.
+    \item \textbf{Location nodes:} One per unique location string, enabling spatial clustering.
+\end{itemize}
+
+\subsection{Three Output Heads}
+
+The model produces three outputs from a shared HAN encoder:
+
+\begin{enumerate}
+    \item \textbf{Road disruption probability:} $\hat{\pi}_e \in [0, 1]$ per road node — the probability that the road is disrupted, used by the Bayesian fusion layer.
+    \item \textbf{Event confidence adjustment:} $\hat{\kappa}_i \in [0, 1]$ per event — a graph-context-informed revision of the LLM's raw confidence score.
+    \item \textbf{Event severity prediction:} 3-class logits (low / medium / high) per event — allows the graph context to override the LLM severity label when the HGNN confidence exceeds 0.85.
+\end{enumerate}
+
+\subsection{Attention Weights and Explainability}
+
+The \texttt{forward()} method exposes attention weights from each HAN layer, making it possible to identify which events drove a route's risk score. This is surfaced to users via the \texttt{POST /api/explain-route} endpoint, which returns attention-ranked event explanations for a given set of road segments — a direct implementation of research hypothesis H3 (explainable routing outputs enhance user trust).
+
+\textbf{Week 3 Conclusion:} The Bayesian probabilistic fusion layer was fully implemented with time-of-day priors, severity-based likelihood ratios, and HGNN blending. The HGNN architecture with its three output heads and attention-based explainability was studied and its integration points with the pipeline understood. Together, these components complete the probabilistic intelligence stack underlying route risk assessment.
+
+\clearpage
+
+% ===================================================================
+\chapter{Week 4: Bus Transit Integration and API Development}
+\label{chap:week4}
+% ===================================================================
+
+\section{Bus Transit Network Modelling}
+
+The fourth and final week focused on extending the multimodal framework to include Kolkata's bus network as a first-class routing mode. Many Kolkata localities are not directly served by metro, making buses the primary mode of public transport for first-mile and last-mile connectivity.
+
+\subsection{Motivation}
+
+In real-world Kolkata travel:
+
+\begin{itemize}
+    \item Users frequently combine bus and metro journeys.
+    \item Buses provide access to areas beyond the metro corridor.
+    \item Bus routes often remain viable when road congestion affects private vehicles, as buses may use dedicated lanes or avoid congested arterials.
+    \item Integrating bus routing enables the system to recommend full public transport journeys with no private vehicle component.
+\end{itemize}
+
+\subsection{Data Modelling: Stops and Routes}
+
+Two datasets were structured for the Kolkata bus network:
+
+\textbf{Bus Stops Dataset} (\texttt{app/transit/data/bus\_stops.json}): Each stop contains a unique stop ID, stop name, latitude, and longitude. Major stops include Howrah Station, Esplanade, Park Street, Sealdah, Salt Lake Sector V, Garia, Airport, and all major interchange points across the city.
+
+\textbf{Bus Routes Dataset} (\texttt{app/transit/data/bus\_routes.json}): Each route contains a route number, route type (AC / Government / Non-AC / Mini), and an ordered sequence of stop IDs. Route types are sorted in the API response with AC routes first, providing practical relevance to commuters.
+
+\subsection{Bus Graph Construction}
+
+The \texttt{app/transit/bus\_graph.py} module represents the bus network as a directed graph:
+
+\begin{itemize}
+    \item \textbf{Nodes:} Bus stops, each identified by a unique stop ID.
+    \item \textbf{Edges:} Directed connections between consecutive stops on a route, weighted by estimated travel time between stops.
+\end{itemize}
+
+The \texttt{load\_stops()}, \texttt{load\_routes()}, and \texttt{load\_route\_sequences()} functions provide the base data access layer used by both the routing engine and the API overlay endpoints.
+
+\subsection{Bus Route Engine}
+
+The \texttt{app/transit/bus\_engine.py} module implements BFS-based bus route finding. Given an origin and destination stop, the engine:
+
+\begin{enumerate}
+    \item Identifies which routes serve the origin stop.
+    \item Performs a breadth-first search over the bus graph to find the path with minimum transfers.
+    \item Returns an ordered list of stops with route identifiers for each leg.
+\end{enumerate}
+
+This mirrors the approach used for metro routing, enabling unified handling of public transport modes within the multimodal orchestration layer.
+
+\section{Bus Map Overlay}
+
+The \texttt{app/transit/bus\_overlay.py} module generates GeoJSON feature collections for map display:
+
+\begin{itemize}
+    \item Each bus stop is represented as a GeoJSON Point feature with stop ID and name properties.
+    \item Bus route corridors are represented as GeoJSON LineString features, connecting stops in order.
+\end{itemize}
+
+Two dedicated API endpoints were developed:
+
+\begin{itemize}
+    \item \texttt{GET /api/bus-overlay}: Returns all bus stops as a GeoJSON FeatureCollection for the Leaflet map layer.
+    \item \texttt{GET /api/bus-network}: Returns the complete bus network with routes, stops, coordinates, route types, and stop counts — used for the route selection panel.
+\end{itemize}
+
+\section{Complete API Surface}
+
+By the end of Week 4, the full API surface of the system was operational. The complete endpoint reference is:
+
+\begin{longtable}{|p{1.5cm}|p{4.5cm}|p{6cm}|}
+\hline
+\textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+GET  & /                             & Leaflet.js map frontend \\
+\hline
+GET  & /api/locations                & Kolkata localities, metro stations, bus stops \\
+\hline
+POST & /api/route                    & Step 1: fast route computation, no LLM \\
+\hline
+POST & /api/disruptions              & Step 2: LLM extraction, HGNN, scoring \\
+\hline
+POST & /api/explain-route            & HGNN attention explanation for route risk \\
+\hline
+GET  & /api/metro-overlay            & GeoJSON of all metro lines and stations \\
+\hline
+GET  & /api/metro-lines              & Metro line summary with timetable info \\
+\hline
+GET  & /api/next-metro/\{station\}   & Next $n$ trains at a station (live IST time) \\
+\hline
+GET  & /api/bus-overlay              & GeoJSON of all bus stops \\
+\hline
+GET  & /api/bus-network              & Full bus network: routes, stops, coordinates \\
+\hline
+GET  & /api/hgnn-status              & HGNN model readiness status \\
+\hline
+\end{longtable}
+
+\section{Database and Auto-Migration}
+
+The system uses a SQLite database (\texttt{traffic\_events.db}) managed by SQLAlchemy. The \texttt{TrafficEvent} model stores all extracted disruption events with 30+ columns, including:
+
+\begin{itemize}
+    \item Core LLM outputs: event type, location, severity, confidence.
+    \item HGNN-adjusted values stored alongside original LLM values for training feedback.
+    \item GPS coordinates (latitude, longitude) used for HGNN spatial adjacency graph construction.
+    \item Impact duration, source reliability, and publication date for multi-factor confidence scoring.
+\end{itemize}
+
+An auto-migration routine runs on startup, safely adding new columns to existing databases using \texttt{PRAGMA table\_info} checks and \texttt{ALTER TABLE} — ensuring that teammates with older database files are not blocked from running the server.
+
+\textbf{Week 4 Conclusion:} The bus transit module was fully implemented, including stop and route data modelling, graph construction, BFS-based routing, GeoJSON map overlay, and API endpoints. The complete 11-endpoint API surface was tested and operational. The database auto-migration system was verified to handle schema upgrades gracefully across all team members' environments.
+
+\clearpage
+
+% ===================================================================
+\section*{Industrial Aspects Related to Your Course}
+\addcontentsline{toc}{section}{Industrial aspects related to your course}
+% ===================================================================
+
+The research internship at the Transportation Engineering Division, IIT Kharagpur, provided direct and large-scale practical application of core concepts from the Computer Science and Engineering curriculum at Rajasthan Technical University. The traffic-ai project validated and extended theoretical knowledge across multiple domains:
+
+\subsection*{Artificial Intelligence and Machine Learning}
+
+The most prominent application was the use of Large Language Models for structured information extraction from unstructured text. The LangChain LCEL pipeline demonstrated practical use of prompt engineering, structured output parsing, and multi-stage fallback strategies. The HGNN module applied Graph Neural Network concepts to a heterogeneous graph with four node types and multi-task learning with three output heads, directly connecting to coursework on neural networks and representation learning.
+
+\subsection*{Data Structures and Graph Algorithms}
+
+The routing engine is built on graph algorithms at its core. OSMnx represents the Kolkata road network as a weighted directed graph, and $k$-shortest-paths algorithms (Yen's algorithm) generate alternative routes. Metro and bus routing both use BFS on graph structures. The Bayesian fusion layer uses dictionary-based graph traversal to propagate disruption signals from events to road edges. These applications directly extend Data Structures and Algorithms coursework into large-scale real-world graphs with tens of thousands of nodes.
+
+\subsection*{Database Management Systems}
+
+SQLAlchemy and SQLite were used to design and manage a relational schema with 30+ columns, foreign-key relationships, and an auto-migration system for live schema upgrades. The schema design — separating source metadata, LLM outputs, HGNN feedback, and temporal fields — applied normalisation principles from DBMS coursework. The system can be migrated to PostgreSQL by changing a single environment variable, demonstrating database portability.
+
+\subsection*{Web Technologies and API Design}
+
+The FastAPI backend applies RESTful API design principles: separation of concerns between the route computation endpoint and the disruption analysis endpoint, structured request/response models using Pydantic, CORS middleware for cross-origin frontend access, and static file serving for the Leaflet.js frontend. The two-step API design pattern — returning fast partial results before expensive computation completes — is a professional production engineering pattern directly applicable to real-time web systems.
+
+\subsection*{Operating Systems and System Programming}
+
+Environment configuration using \texttt{.env} files and \texttt{python-dotenv}, process management with \texttt{uvicorn}, OS-aware file path handling using \texttt{os.path.abspath()}, and pickle-based caching of large graph objects all applied OS-level concepts from the curriculum. The graph cache design — loading a 50MB OSM pickle in 2 seconds versus a 30-second download — demonstrates practical understanding of I/O performance and memory management.
+
+\subsection*{Computer Networks and API Integration}
+
+The system integrates six external APIs (TomTom, OpenWeatherMap, NewsAPI, OpenRouter, Gemini, Nominatim) with proper HTTP request handling, error recovery, rate limit management with exponential backoff, and timeout configuration. The Nominatim forward-geocoding integration applies DNS and HTTP concepts while demonstrating a practical forward geocoding cache that reduces API calls and latency.
+
+\clearpage
+
+% ===================================================================
+\section*{Conclusions}
+\addcontentsline{toc}{section}{CONCLUSIONS}
+% ===================================================================
+
+The Summer Research Internship at the Transportation Engineering Division, IIT Kharagpur, provided a comprehensive and technically rigorous experience in building a production-grade AI-powered transportation intelligence system. The following key outcomes and conclusions are drawn:
+
+\begin{itemize}
+
+    \item \textbf{Multimodal System Development:} The traffic-ai system was successfully extended from a road-only routing tool into a full multimodal transportation intelligence platform supporting eight transport modes: drive, walk, bike, metro, metro+walk, metro+bike, metro+drive, and bus. This demonstrates the practical application of graph-based multimodal routing in a real urban context.
+
+    \item \textbf{Weather Intelligence Integration:} A route-sampling weather risk assessment pipeline was implemented using OpenWeatherMap, producing a per-route Weather Severity Index (WSI) that accounts for localised weather conditions along each route rather than a single city-level measurement.
+
+    \item \textbf{Bayesian Probabilistic Fusion:} Layer 2 of the system was fully implemented, translating LLM-derived disruption signals and HGNN road probabilities into posterior disruption probabilities per road edge using Bayes' rule with empirically calibrated time-of-day priors and severity-based likelihood ratios.
+
+    \item \textbf{Metro Network Integration:} All five operational Kolkata Metro lines were integrated with full station databases, timetable support, real-time next-train computation, and multimodal journey segment construction. The metro overlay API enables visual representation of the network on the Leaflet map.
+
+    \item \textbf{Bus Transit Architecture:} A complete bus transit module was designed and implemented, including stop and route data modelling, graph-based routing via BFS, GeoJSON map overlay, and API endpoints. This lays the groundwork for the system's long-term vision of unified multimodal journey optimisation.
+
+    \item \textbf{Research Hypothesis Contribution:} The work directly contributes to all three research hypotheses: H1 (LLM extraction improves disruption detection), H2 (probabilistic fusion improves routing reliability via Bayesian posteriors), and H3 (HGNN attention weights enable explainable route recommendations).
+
+    \item \textbf{Bridging Theory and Practice:} The internship transformed theoretical knowledge from AI, graph algorithms, DBMS, web technologies, and computer networks into deployable, production-quality components of an active research system targeted at a real metropolitan transportation network.
+
+\end{itemize}
+
+The experience has significantly reinforced my commitment to building intelligent, data-driven systems that address large-scale societal challenges, and has provided a strong foundation for future research and professional work in AI-powered urban systems.
+
+\clearpage
+
+% ===================================================================
+\begin{thebibliography}{99}
+
+    \bibitem{traffic_ai_repo}
+    \textbf{traffic-ai Repository.} N. Kumar and L. Sharma.
+    Available at: \url{https://github.com/sawarn-nik/traffic-ai}
+
+    \bibitem{team_repo}
+    \textbf{IIT KGP Internship Team Repository.} Available at:
+    \url{https://github.com/lakshya1729git/IIT_kgp_internship}
+
+    \bibitem{fastapi}
+    \textbf{FastAPI.} S. Ram\'irez. Available at: \url{https://fastapi.tiangolo.com/}
+
+    \bibitem{osmnx}
+    \textbf{OSMnx: Python for Street Networks and Geospatial Data.}
+    G. Boeing. Available at: \url{https://osmnx.readthedocs.io/}
+
+    \bibitem{langchain}
+    \textbf{LangChain Documentation.} LangChain, Inc.
+    Available at: \url{https://python.langchain.com/}
+
+    \bibitem{openrouter}
+    \textbf{OpenRouter — Unified LLM API.}
+    Available at: \url{https://openrouter.ai/}
+
+    \bibitem{tomtom_api}
+    \textbf{TomTom Traffic Incidents API.} TomTom International BV.
+    Available at: \url{https://developer.tomtom.com/traffic-api/documentation/traffic-incidents/incident-details}
+
+    \bibitem{openweathermap}
+    \textbf{OpenWeatherMap Current Weather API.} OpenWeather Ltd.
+    Available at: \url{https://openweathermap.org/api/one-call-3}
+
+    \bibitem{newsapi}
+    \textbf{NewsAPI.} Available at: \url{https://newsapi.org/}
+
+    \bibitem{nominatim}
+    \textbf{Nominatim — OpenStreetMap Geocoding.} OpenStreetMap Foundation.
+    Available at: \url{https://nominatim.org/}
+
+    \bibitem{sqlalchemy}
+    \textbf{SQLAlchemy — Python SQL Toolkit.} SQLAlchemy Authors.
+    Available at: \url{https://www.sqlalchemy.org/}
+
+    \bibitem{pydantic}
+    \textbf{Pydantic — Data Validation Using Python Type Hints.}
+    Available at: \url{https://docs.pydantic.dev/}
+
+    \bibitem{leaflet}
+    \textbf{Leaflet.js — Interactive Maps.} V. Agafonkin.
+    Available at: \url{https://leafletjs.com/}
+
+    \bibitem{han_paper}
+    \textbf{Heterogeneous Graph Attention Network.}
+    X. Wang et al., \textit{The World Wide Web Conference (WWW 2019)}.
+    Available at: \url{https://arxiv.org/abs/1903.07293}
+
+    \bibitem{bayesian_routing}
+    \textbf{Bayesian Approach for Network-wide Traffic State Estimation.}
+    J. Work et al., \textit{IEEE Transactions on Intelligent Transportation Systems}, 2010.
+
+    \bibitem{kolkata_metro}
+    \textbf{Kolkata Metro Rail Corporation (KMRC).} Official Website.
+    Available at: \url{https://www.kmrc.in/}
+
+\end{thebibliography}
+
+\clearpage
+
+\end{document}

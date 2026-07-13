@@ -1,0 +1,51 @@
+\thispagestyle{front}
+\vspace*{0.5cm}
+\begin{center}
+  \textbf{\Large ABSTRACT}
+  \addcontentsline{toc}{chapter}{Abstract}
+\end{center}
+\vspace{1cm}
+
+\noindent
+Most navigation systems today update routes only after a disruption has already
+been detected by sensors -- they are reactive by design. This project builds an
+\textbf{anticipatory} alternative for Kolkata, India.
+
+\vspace{0.5cm}
+\noindent
+The system, \textbf{traffic-ai}, pulls unstructured text from nine live sources
+(news RSS feeds, TomTom traffic incidents, official advisories, weather APIs)
+and uses a Large Language Model to extract structured disruption events from that
+text \textit{before} a commuter travels. Each event carries a severity score
+$\sigma$ and a confidence weight $\kappa$. A Temporal Heterogeneous Graph Neural
+Network (HGNN) then adjusts those confidence values using city-wide spatial
+context. A Bayesian fusion layer converts the signals into per-road disruption
+probabilities, which are used to colour-code and rank candidate routes on a
+Leaflet.js map.
+
+\vspace{0.5cm}
+\noindent
+The system supports eight transport modes spanning drive, walk, bike, all five
+Kolkata Metro lines, and bus. The API is split into two steps: routes appear on
+screen within $\sim$2~s while the slower LLM pipeline ($\sim$30--60~s) fills in
+risk scores in the background.
+
+\vspace{0.5cm}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Aspect} & \textbf{Summary} \\
+\midrule
+Pilot city          & Kolkata, India \\
+Data sources        & 9 (structured + unstructured) \\
+Transport modes     & 8 \\
+LLM backend         & OpenRouter / Gemini / Ollama (configurable) \\
+Graph model         & Temporal HAN -- 3 output heads \\
+Probabilistic layer & Bayesian fusion with time-of-day priors \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage

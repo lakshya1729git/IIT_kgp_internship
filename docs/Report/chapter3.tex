@@ -1,0 +1,169 @@
+\chapter{Methodology}
+
+% ==============================================================
+\section{Layer 1 --- LLM Disruption Intelligence}
+% ==============================================================
+
+\subsection{Article Pre-filter}
+
+Let $\mathcal{A} = \{a_1, \dots, a_N\}$ be the raw article set fetched
+from all sources. Before incurring any LLM cost, each article $a_i$ is
+evaluated against three binary predicates:
+
+\begin{align}
+  f_{\text{age}}(a_i)  &= \mathbf{1}\!\left[\,t_{\text{now}} - t_{a_i} \leq T_{\max}\right],
+  \quad T_{\max} = 48\text{ h} \label{eq:filter_age}\\
+  f_{\text{geo}}(a_i)  &= \mathbf{1}\!\left[\,\ell_{a_i} \in \mathcal{B}_{\text{KOL}}\right]
+  \label{eq:filter_geo}\\
+  f_{\text{rel}}(a_i)  &= \mathbf{1}\!\left[\,\exists\, w \in \mathcal{W} : w \in a_i\right]
+  \label{eq:filter_rel}
+\end{align}
+
+where $\mathcal{B}_{\text{KOL}}$ is the Kolkata bounding box
+$(22.45^\circ\text{N},\,88.24^\circ\text{E})$ to
+$(22.63^\circ\text{N},\,88.46^\circ\text{E})$,
+and $\mathcal{W}$ is a curated keyword vocabulary of transport terms.
+Only articles satisfying all three predicates form the filtered set:
+\begin{equation}
+  \tilde{\mathcal{A}} = \bigl\{\,a_i \in \mathcal{A} \;\mid\;
+  f_{\text{age}}(a_i) \wedge f_{\text{geo}}(a_i) \wedge f_{\text{rel}}(a_i)\bigr\}
+  \label{eq:filtered_set}
+\end{equation}
+
+\subsection{LLM Structured Extraction}
+
+Each article $a_i \in \tilde{\mathcal{A}}$ is passed to a large language
+model $\mathcal{M}$ that is constrained to return a structured object
+conforming to \texttt{TrafficEventSchema}:
+\begin{equation}
+  d_i = \mathcal{M}(a_i) =
+  \bigl(\text{type}_i,\;\ell_i,\;\sigma_i,\;\kappa_i^{\text{llm}},\;
+        \tau_i,\;\delta_i,\;b_i^{\text{future}}\bigr)
+  \label{eq:llm_extraction}
+\end{equation}
+
+where $\ell_i$ is the extracted location string (mandatory),
+$\tau_i$ is the time mentioned, $\delta_i$ is the estimated impact
+duration in minutes, and $b_i^{\text{future}} \in \{0,1\}$ flags
+planned events. The severity $\sigma_i$ is discretised as:
+\begin{equation}
+  \sigma_i =
+  \begin{cases}
+    2  & \text{if severity} = \texttt{low} \\
+    5  & \text{if severity} = \texttt{medium} \\
+    10 & \text{if severity} = \texttt{high}
+  \end{cases}
+  \label{eq:severity_map}
+\end{equation}
+
+\textbf{Location enforcement.} If $\ell_i = \varnothing$ after the
+primary extraction:
+\begin{equation}
+  d_i =
+  \begin{cases}
+    \mathcal{M}_{\text{loc}}(a_i) & \text{if } \kappa_i^{\text{llm}} \geq 0.6
+      \quad \text{(location-retry pass)} \\
+    \text{discard}                & \text{if } \kappa_i^{\text{llm}} < 0.6
+  \end{cases}
+  \label{eq:location_enforcement}
+\end{equation}
+
+where $\mathcal{M}_{\text{loc}}$ is a focused second prompt requesting
+only the location field. This prevents null-location events from
+inflating route risk scores.
+
+\subsection{Multi-Factor Confidence Scoring}
+
+The raw LLM confidence $\kappa_i^{\text{llm}}$ is adjusted by three
+independent reliability factors before being used downstream:
+\begin{equation}
+  \kappa_i^{\text{rule}} =
+  \kappa_i^{\text{llm}}
+  \;\cdot\; \lambda_s(s_i)
+  \;\cdot\; \lambda_a(t_{\text{now}} - t_{a_i})
+  \;\cdot\; \lambda_\ell(\ell_i)
+  \label{eq:rule_confidence}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Confidence adjustment factors in Eq.~\eqref{eq:rule_confidence}}
+\begin{tabular}{llp{7.5cm}}
+\toprule
+\textbf{Factor} & \textbf{Symbol} & \textbf{Definition} \\
+\midrule
+Source reliability
+  & $\lambda_s(s_i) \in [0.6, 1.0]$
+  & TomTom = 1.0; official scrapers = 0.9;
+    RSS city = 0.75; NewsAPI = 0.7 \\[4pt]
+Age decay
+  & $\lambda_a(\Delta t) \in [0.5, 1.0]$
+  & $\Delta t \leq 1\text{ h}: 1.0$;\;
+    $\leq 6\text{ h}: 0.9$;\;
+    $\leq 24\text{ h}: 0.75$;\;
+    older: $0.5$ \\[4pt]
+Location quality
+  & $\lambda_\ell(\ell_i) \in [0.7, 1.0]$
+  & \texttt{direct}: 1.0;\;
+    \texttt{road\_name}: 0.95;\;
+    \texttt{landmark}: 0.85;\;
+    \texttt{llm\_inferred}: 0.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Event Risk Scoring}
+
+The weighted score for a single event $d_i$ is:
+\begin{equation}
+  w_i = \sigma_i \;\cdot\; \kappa_i^{\text{final}}
+        \;\cdot\; d_m(\delta_i) \;\cdot\; r_m(\Delta t_i)
+  \label{eq:weighted_score}
+\end{equation}
+
+The duration multiplier $d_m$ penalises long-lasting disruptions:
+\begin{equation}
+  d_m(\delta_i) =
+  \begin{cases}
+    2.0 & \delta_i \geq 1440 \text{ min} \quad (\geq\!1\text{ day})\\
+    1.5 & 480 \leq \delta_i < 1440 \quad (\geq\!8\text{ h})\\
+    1.2 & 120 \leq \delta_i < 480  \quad (\geq\!2\text{ h})\\
+    1.0 & \text{otherwise}
+  \end{cases}
+  \label{eq:duration_mult}
+\end{equation}
+
+The recency multiplier $r_m$ down-weights stale events:
+\begin{equation}
+  r_m(\Delta t_i) =
+  \begin{cases}
+    1.00 & \Delta t_i \leq 1\text{ h} \\
+    0.90 & 1 < \Delta t_i \leq 6\text{ h} \\
+    0.75 & 6 < \Delta t_i \leq 24\text{ h} \\
+    0.50 & \Delta t_i > 24\text{ h}
+  \end{cases}
+  \label{eq:recency_mult}
+\end{equation}
+
+The aggregate risk score for route $r$ is the sum over all events
+that (i) are matched spatially to the route corridor, (ii) are
+currently active ($b_i^{\text{future}} = 0$), and (iii) are recent:
+\begin{equation}
+  \rho(r) = \sum_{\substack{d_i \in \mathcal{D}_r \\ b_i^{\text{future}}=0}}
+            w_i
+  \label{eq:route_risk}
+\end{equation}
+
+where $\mathcal{D}_r \subseteq \mathcal{D}$ is the set of events
+matched to route $r$. Risk levels are thresholded as:
+\begin{equation}
+  \text{level}(r) =
+  \begin{cases}
+    \textsc{Critical} & \rho(r) \geq 25 \\
+    \textsc{High}     & 12 \leq \rho(r) < 25 \\
+    \textsc{Moderate} & 5  \leq \rho(r) < 12 \\
+    \textsc{Low}      & 0  < \rho(r) < 5 \\
+    \textsc{Clear}    & \rho(r) = 0
+  \end{cases}
+  \label{eq:risk_levels}
+\end{equation}

@@ -1,0 +1,94 @@
+\chapter{Introduction}
+
+\section{Context}
+
+Kolkata's road network carries millions of trips daily across a mix of private
+vehicles, metros, busses, and pedestrians. Disruptions -- waterlogging, VIP
+convoys, accidents, road closures -- are frequent and hard to predict from
+sensor data alone because a large share of disruption information first appears
+in news articles and official advisories, not on roads.
+
+Existing navigation tools (Google Maps, Apple Maps) react to congestion after
+it shows up in GPS probe data, often minutes to hours after the event begins.
+This project asks whether reading that unstructured text \textit{before travel}
+can produce better route recommendations.
+
+\section{Problem Statement}
+
+\begin{table}[H]
+\centering
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Dimension} & \textbf{Current systems} & \textbf{This project} \\
+\midrule
+Data types used     & Structured only          & Structured + unstructured \\
+Timing              & After disruption         & Before disruption \\
+Objective           & Minimise travel time     & Minimise risk-adjusted time \\
+Uncertainty         & Deterministic            & Probabilistic \\
+Explainability      & None                     & HGNN attention weights \\
+Multimodal          & Limited                  & 8 modes inc.\ metro and bus \\
+\bottomrule
+\end{tabular}
+\caption{Reactive vs.\ anticipatory trip planning}
+\end{table}
+
+\section{Research Hypotheses}
+
+\begin{table}[H]
+\centering
+
+\begin{tabular}{cp{11.5cm}}
+\toprule
+\textbf{ID} & \textbf{Hypothesis} \\
+\midrule
+H1 & LLM-derived contextual signals improve disruption detection accuracy
+     over structured-data-only baselines. \\
+H2 & Probabilistic, risk-aware routing improves travel-time reliability
+     under uncertain conditions. \\
+H3 & Exposing HGNN attention weights as route explanations increases
+     commuter trust in system recommendations. \\
+\bottomrule
+\end{tabular}
+\caption{Guiding hypotheses}
+\end{table}
+
+\section{Scope of Internship}
+
+\begin{table}[H]
+\centering
+\caption{Work carried out during the internship}
+\begin{tabular}{clc}
+\toprule
+\textbf{\#} & \textbf{Contribution} & \textbf{Status} \\
+\midrule
+1  & LLM disruption extraction pipeline (Layer 1)               & Done \\
+2  & Multi-factor confidence scoring + impact duration           & Done \\
+3  & Temporal HGNN -- training loop + inference                 & Done \\
+4  & Bayesian probabilistic fusion (Layer 2)                     & Done \\
+5  & Weather Severity Index per route                            & Done \\
+6  & Kolkata Metro integration (5 lines, timetable, next-train)  & Done \\
+7  & Bus transit graph + BFS routing engine                      & Done \\
+8  & Multimodal routing orchestration                            & Done \\
+9  & FastAPI backend (11 endpoints)                              & Done \\
+10 & Leaflet.js frontend + map overlays                          & Done \\
+11 & CVaR risk-aware routing (Layer 3)                           & In progress \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Report Structure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cl}
+\toprule
+\textbf{Chapter} & \textbf{Content} \\
+\midrule
+2 & System architecture, data sources, API design \\
+3 & Implementation -- Layers 1, 2, routing, database \\
+4 & Results, UI screenshots, performance metrics \\
+5 & Conclusion and future work \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,270 @@
+\chapter{System Architecture and Problem Formulation}
+
+% ==============================================================
+\section{Notation}
+% ==============================================================
+
+\begin{table}[H]
+\centering
+\caption{Mathematical notation used throughout the report}
+\begin{tabular}{p{2.8cm} p{10cm}}
+\toprule
+\textbf{Symbol} & \textbf{Definition} \\
+\midrule
+$\mathcal{G} = (V, E)$
+  & Directed road graph; $V$ = intersections, $E$ = road segments \\
+$e \in E$
+  & A directed road edge (segment) \\
+$\mathcal{A} = \{a_1, \dots, a_N\}$
+  & Set of $N$ ingested articles / traffic incidents \\
+$\mathcal{D} = \{d_1, \dots, d_M\}$
+  & Set of $M$ extracted disruption events after LLM processing \\
+$\sigma_i \in \{2, 5, 10\}$
+  & Severity score of event $d_i$: low $= 2$, medium $= 5$, high $= 10$ \\
+$\kappa_i \in [0, 1]$
+  & Confidence weight of event $d_i$ \\
+$\hat{\kappa}_i$
+  & HGNN-adjusted confidence for event $d_i$ \\
+$\kappa_i^{\text{final}}$
+  & Blended confidence after HGNN correction \\
+$Z_e(t) \in \{0, 1\}$
+  & Binary disruption state of edge $e$ at time $t$ \\
+$\pi_e^{\text{prior}}(t)$
+  & Time-of-day prior disruption probability for edge $e$ \\
+$\pi_e^{\text{post}}(t)$
+  & Posterior disruption probability after Bayesian update \\
+$\pi_e^{\text{final}}(t)$
+  & Final per-edge probability after HGNN blend \\
+$\mathcal{R} = \{r_1, \dots, r_K\}$
+  & Set of $K$ candidate routes computed for a query \\
+$\rho(r)$
+  & Aggregate risk score of route $r$ \\
+$t_r$
+  & Expected travel time of route $r$ \\
+$\mathcal{C}(r)$
+  & Composite route cost used for ranking \\
+$d_m, r_m$
+  & Duration multiplier and recency multiplier \\
+$\mathbf{h}_v^{(\phi)}$
+  & Hidden embedding of node $v$ of type $\phi$ in the HGNN \\
+$\alpha_{uv}$
+  & Attention coefficient between nodes $u$ and $v$ \\
+$\beta_\psi$
+  & Semantic attention weight for meta-path $\psi$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==============================================================
+\section{Formal Problem Definition}
+% ==============================================================
+
+Let $\mathcal{G} = (V, E)$ be the directed road graph of Kolkata.
+Each edge $e \in E$ carries a free-flow travel time $t_e^0$ and a
+disruption state $Z_e(t) \in \{0, 1\}$, which is latent and
+must be inferred from external signals.
+
+\medskip
+\noindent
+A user query $q = (\text{origin}, \text{destination}, \text{mode}, t)$
+arrives at time $t$. The system must return a ranked list of routes
+$r_1 \prec r_2 \prec \cdots \prec r_K$ from origin to destination
+under mode constraints, where the ranking criterion is a composite
+cost that accounts for both expected travel time and disruption risk.
+
+\medskip
+\noindent
+The key challenge is that $Z_e(t)$ is not directly observable.
+It must be estimated from unstructured signals — news articles,
+RSS feeds, official advisories — that carry noisy, partial, and
+sometimes conflicting information about road conditions.
+
+\medskip
+\noindent
+\textbf{Objective.} Find the route $r^*$ that minimises the
+risk-adjusted composite cost:
+\begin{equation}
+  r^* \;=\; \arg\min_{r \in \mathcal{R}}\; \mathcal{C}(r)
+  \;=\; \arg\min_{r \in \mathcal{R}}\;
+        t_r \cdot \Bigl(1 + \frac{\rho(r)}{10}\Bigr)
+  \label{eq:objective}
+\end{equation}
+
+where $\rho(r)$ is the aggregate risk score of route $r$, derived from
+the posterior edge disruption probabilities $\pi_e^{\text{final}}(t)$
+computed through the three-layer pipeline described below.
+
+% ==============================================================
+\section{Layer Overview}
+% ==============================================================
+
+The system processes each query through three sequential layers.
+
+\begin{table}[H]
+\centering
+\caption{System layer summary}
+\begin{tabular}{clp{5cm}c}
+\toprule
+\textbf{Layer} & \textbf{Function} & \textbf{Key output} & \textbf{Status} \\
+\midrule
+1 & LLM extraction + HGNN refinement
+  & $(\sigma_i, \kappa_i^{\text{final}})$ per event $d_i$
+  & Complete \\
+2 & Bayesian probabilistic fusion
+  & $\pi_e^{\text{final}}(t)$ per edge $e$
+  & Complete \\
+3 & CVaR risk-aware routing
+  & ranked routes $r_1 \prec \cdots \prec r_K$
+  & In progress \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+The end-to-end pipeline for a single user query is:
+
+\begin{equation}
+  \mathcal{A}
+  \;\xrightarrow{\text{pre-filter}}\;
+  \tilde{\mathcal{A}}
+  \;\xrightarrow{\text{LLM}}\;
+  \mathcal{D}
+  \;\xrightarrow{\text{HGNN}}\;
+  \{\kappa_i^{\text{final}}\}
+  \;\xrightarrow{\text{Bayes}}\;
+  \{\pi_e^{\text{final}}\}
+  \;\xrightarrow{\text{score}}\;
+  \{\rho(r)\}
+  \;\xrightarrow{\text{rank}}\;
+  r^*
+  \label{eq:pipeline}
+\end{equation}
+
+% ==============================================================
+\section{Data Ingestion Sources}
+% ==============================================================
+
+\begin{longtable}{p{4.0cm} p{2.6cm} p{6.4cm}}
+\toprule
+\textbf{Source} & \textbf{Type} & \textbf{What it provides} \\
+\midrule
+\endhead
+TomTom Incidents API v5~\cite{tomtom2024}
+  & Structured, live
+  & Accidents, closures, road-works with GPS coordinates;
+    2{,}500 free req/day \\[4pt]
+Google News RSS \texttt{when:2d}
+  & Unstructured
+  & City-wide Kolkata disruption news scoped to last 2 days \\[4pt]
+NewsAPI
+  & Unstructured
+  & Per-road keyword search, last 24 h \\[4pt]
+OpenWeatherMap~\cite{openweathermap2024}
+  & Structured, live
+  & Precipitation intensity, wind speed, visibility \\[4pt]
+Kolkata Police (via RSS)
+  & Unstructured
+  & Official traffic advisories \\[4pt]
+KMRC~\cite{kmrc2024}
+  & Unstructured
+  & Metro service disruption notices \\[4pt]
+WB Disaster Management
+  & Unstructured
+  & Flood and cyclone alerts \\[4pt]
+Indian Railways (erail.in)
+  & Structured
+  & Delayed trains at Howrah / Sealdah \\[4pt]
+KMC Waterlogging (RSS)
+  & Unstructured
+  & Waterlogging hotspot reports \\
+\bottomrule
+\end{longtable}
+
+% ==============================================================
+\section{Two-Step API Design}
+% ==============================================================
+
+Equation~\eqref{eq:pipeline} has two distinct latency regimes.
+Route geometry computation on the cached OSM graph takes
+$\sim$2~s; the LLM pipeline over all articles takes 30--60~s.
+Blocking the user interface on the slower step is unacceptable,
+so the pipeline is split at the HGNN boundary:
+
+\begin{table}[H]
+\centering
+\caption{Two-step decoupled request flow}
+\begin{tabular}{p{0.46\textwidth} p{0.46\textwidth}}
+\toprule
+\textbf{Step 1 --- \texttt{POST /api/route} ($\sim$2 s)} &
+\textbf{Step 2 --- \texttt{POST /api/disruptions} ($\sim$30--60 s)} \\
+\midrule
+Computes $\mathcal{R}$ using OSMnx Yen's $k$-shortest paths.
+Returns GeoJSON immediately.
+All routes assigned placeholder $\rho(r) = 0$, shown green. &
+Executes steps $\tilde{\mathcal{A}} \to \mathcal{D} \to \{\kappa_i^{\text{final}}\}
+\to \{\pi_e^{\text{final}}\} \to \{\rho(r)\}$.
+Map updated with risk colours and disruption markers. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==============================================================
+\section{Transport Modes and Graph Construction}
+% ==============================================================
+
+For each transport mode $m$, a separate graph $\mathcal{G}_m = (V_m, E_m)$
+is maintained:
+
+\begin{table}[H]
+\centering
+\caption{Graph structure per transport mode}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Mode} & \textbf{Graph} & \textbf{Edge weight $w_e$} \\
+\midrule
+\texttt{drive}        & OSMnx drive graph        & Free-flow travel time \\
+\texttt{walk}         & OSMnx pedestrian graph   & Walking time at 5 km/h \\
+\texttt{bike}         & OSMnx cycling graph      & Cycling time at 15 km/h \\
+\texttt{metro}        & 5-line station graph     & Scheduled travel time + headway \\
+\texttt{metro+walk}   & Drive + metro + walk     & Composite (access + ride + egress) \\
+\texttt{metro+bike}   & Bike + metro + bike      & Composite \\
+\texttt{metro+drive}  & Drive + metro + drive    & Composite \\
+\texttt{bus}          & Bus stop graph           & Estimated inter-stop time \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For multimodal journeys the total composite cost is:
+\begin{equation}
+  t_r^{\text{multimodal}}
+  \;=\; t_r^{\text{access}} + t_r^{\text{transit}} + t_r^{\text{egress}}
+  \label{eq:multimodal}
+\end{equation}
+
+where each leg uses the edge weights appropriate to its mode.
+
+% ==============================================================
+\section{Complete API Surface}
+% ==============================================================
+
+\begin{table}[H]
+\centering
+\caption{REST API endpoints --- built with FastAPI~\cite{fastapi2024}}
+\begin{tabular}{l l p{7cm}}
+\toprule
+\textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+\midrule
+GET  & \texttt{/}                            & Leaflet.js~\cite{leaflet2024} map frontend \\
+GET  & \texttt{/api/locations}               & Localities, metro stations, bus stops \\
+POST & \texttt{/api/route}                   & Step 1 --- compute $\mathcal{R}$ only \\
+POST & \texttt{/api/disruptions}             & Step 2 --- full pipeline, returns $\rho(r)$ \\
+POST & \texttt{/api/explain-route}           & HGNN attention weights per event \\
+GET  & \texttt{/api/metro-overlay}           & GeoJSON of all 5 metro lines \\
+GET  & \texttt{/api/metro-lines}             & Timetable summary per line \\
+GET  & \texttt{/api/next-metro/\{station\}}  & Next $n$ trains (live IST time) \\
+GET  & \texttt{/api/bus-overlay}             & GeoJSON of all bus stops \\
+GET  & \texttt{/api/bus-network}             & Full bus route and stop data \\
+GET  & \texttt{/api/hgnn-status}             & Model weights loaded / ready flag \\
+\bottomrule
+\end{tabular}
+\end{table}
