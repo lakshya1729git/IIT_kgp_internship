@@ -32,6 +32,12 @@ System:
 
 ---
 
+## User Interface
+
+![traffic-ai map interface](images/user-interface.png)
+
+---
+
 ## Quickstart
 
 ### 1. Clone
