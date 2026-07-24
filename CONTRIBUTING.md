@@ -1,6 +1,6 @@
 # Contributing to traffic-ai
 
-Read this before writing any code. It covers setup, branching, commits, and what each layer needs to build.
+Read this before writing any code.
 
 ---
 
@@ -19,11 +19,11 @@ cp .env.example .env
 # Fill in your API keys — ask Nikhil for the shared dev set
 ```
 
-**Never commit `.env`.** It's in `.gitignore`. Keys go in `.env` only.
+**Never commit `.env`.** It's in `.gitignore`.
 
 ---
 
-## 2. Running the project
+## 2. Running the server
 
 ```bash
 cd app
@@ -31,60 +31,89 @@ uvicorn api:app --port 8000 --reload
 # Open http://localhost:8000
 ```
 
-`main.py` is the old CLI version — use it only for quick debugging without the browser.
+`main.py` is the CLI version — use it for quick debugging without the browser.
 
 ---
 
-## 3. Branch strategy
+## 3. Running the HGNN training pipeline
+
+Run these from the `app/` directory in order:
+
+```bash
+# Generate synthetic balanced training data (run once or when DB is small)
+python generate_training_data.py --count 400
+
+# Auto-label TomTom events using deterministic rules
+python auto_label.py
+
+# (Optional) Label events by hand — quit anytime, progress is saved
+python label_events.py --limit 100
+
+# Backfill NULL lat/lon for non-TomTom events (Nominatim, ~1 req/s)
+python backfill_coords.py
+
+# Train the model
+python -m hgnn.trainer --epochs 200 --lr 0.001 --patience 40
+
+# Evaluate against verified labels
+python evaluate_hgnn.py --export results/
+```
+
+---
+
+## 4. Branch strategy
 
 ```
-main   ← stable, protected — no direct pushes
- └── dev  ← everyone merges here
-      ├── feature/layer2-bayesian-fusion   (Teammate A)
-      ├── feature/layer3-routing           (Teammate B)
-      ├── feature/ui-extensions            (Teammate C)
+main        ← stable, protected — no direct pushes
+ └── nikhil ← Nikhil's working branch
+ └── dev    ← shared integration branch
+      ├── feature/layer3-cvar-routing
+      ├── feature/nlp-explanations
       └── fix/short-description
 ```
 
 **Rules:**
 - Branch off `dev`, merge back into `dev` via PR
-- Never push directly to `main` or `dev`
-- `main` only updated by merging `dev` after team review
+- Never push directly to `main`
+- `main` only updated after team review
+
+Both remotes are updated with a single push (configured via `git remote`):
+- `origin` → `github.com/sawarn-nik/traffic-ai`
+- `lakshya` → `github.com/lakshya1729git/IIT_kgp_internship`
 
 ---
 
-## 4. Daily workflow
+## 5. Daily workflow
 
 ```bash
-# Sync with latest dev
+# Sync with latest
 git checkout dev
 git pull origin dev
 git checkout your-feature-branch
 git rebase dev
 
-# Work and commit
+# Work, then commit
 git add app/your_file.py
 git commit -m "feat(scope): what you did"
 
-# Push to both repos at once
 git push
 ```
 
 ---
 
-## 5. Commit message format
+## 6. Commit message format
 
 ```
-feat(extractor): add JSON repair for malformed LLM output
+feat(hgnn): add verified-label boosting to trainer V3
 fix(rss_fetcher): scope queries to when:2d for recency
 refactor(route_engine): extract bounds check into helper
-docs(readme): update quickstart for uvicorn
-chore(deps): add fastapi and uvicorn to req.txt
+docs(readme): update contributor credits
+chore(deps): pin sqlalchemy to 2.0.50
 ```
 
 | Prefix | When to use |
 |--------|-------------|
-| `feat` | New feature |
+| `feat` | New feature or module |
 | `fix` | Bug fix |
 | `refactor` | Restructure without behaviour change |
 | `docs` | Docs, comments, docstrings |
@@ -92,93 +121,64 @@ chore(deps): add fastapi and uvicorn to req.txt
 
 ---
 
-## 6. PR checklist
+## 7. PR checklist
 
 - [ ] `uvicorn api:app --port 8000` starts without errors
-- [ ] No `.env` file in the diff (`git status` should not show it)
-- [ ] No API keys anywhere in the code
+- [ ] No `.env` file in the diff
+- [ ] No API keys hardcoded anywhere in the code
 - [ ] New functions have docstrings
 - [ ] PR description explains what changed and why
+- [ ] If you touched the DB schema, the auto-migration in `models.py` is updated
 
 ---
 
-## 7. What NOT to commit
+## 8. What NOT to commit
 
-| File/folder | Reason |
-|-------------|--------|
+| File / folder | Reason |
+|---------------|--------|
 | `.env` | API keys |
 | `venv/` | ~200MB, everyone installs their own |
 | `*.db` | Generated at runtime |
-| `app/cache/graph.graphml` | ~50MB OSM graph, auto-downloaded |
+| `app/cache/*.pkl` | ~50MB OSM graph, auto-downloaded |
 | `app/cache/*.json` | OSMnx cache, machine-specific |
 | `__pycache__/` | Python bytecode |
 | `.DS_Store` | macOS metadata |
+| `docs/` | Local reports and LaTeX — not tracked |
 
 ---
 
-## 8. Two remotes — one push
+## 9. Layer 3 — what to build next
 
-Your local repo pushes to both the personal repo and the team repo simultaneously:
+**Files:**
+- `app/routing/cost_function.py` — Equation 3 is fully implemented; integrate it into route ranking in `api.py`
+- `app/routing/cvar_router.py` — **TODO**: CVaR path optimisation using the generalised cost
+- `app/routing/travel_time.py` — **TODO**: travel time distributions (nominal + disruption mixture)
 
-```bash
-git remote -v
-# origin  https://github.com/sawarn-nik/traffic-ai.git (fetch)
-# origin  https://github.com/sawarn-nik/traffic-ai.git (push)
-# origin  https://github.com/lakshya1729git/IIT_kgp_internship.git (push)
-```
-
-One `git push` → both repos updated. No extra steps.
-
----
-
-## 9. Layer 2 — Bayesian Fusion
-
-**File:** `app/fusion/bayesian_fusion.py` (placeholder with spec)  
-**Branch:** `feature/layer2-bayesian-fusion`
-
-Implement Eq. 1 from the proposal:
-
-```
-π_e^post(t) = p(S | Z_e=1) × π_e^prior(t)
-              ─────────────────────────────
-              Σ p(S | Z_e=z) × π_e^prior(t)
-```
-
-**Inputs** already in `traffic_events.db`:
-- `severity_score` → σ(t)
-- `confidence` → κ(t)
-- `road_name`, `event_type`, `is_future_event`, `fetched_at`
-
-**Output:** `dict[road_name → posterior_probability ∈ [0,1]]`  
-This feeds into Layer 3's edge cost function.
-
-**Prior:** start with a simple time-of-day baseline (peak hours = 0.2, off-peak = 0.05), refine with historical DB rates later.
-
----
-
-## 10. Layer 3 — Risk-Aware Routing
-
-**File:** `app/routing/cost_function.py` (placeholder with spec)  
-**Branch:** `feature/layer3-routing`
-
-Implement Eq. 3:
+**Equation 3 (from proposal):**
 
 ```
 c_e(t) = c_base(t)
-       + λ1·E[τ̃_e(t)]     ← expected travel time
-       + λ2·Var[τ̃_e(t)]    ← reliability
-       + λ3·κ·σ             ← disruption risk
-       + λ4·CO2(e)          ← emissions
-       + λ5·Transfers(e)    ← mode-switch penalty
+       + λ1 · E[τ̃_e(t)]      ← expected (disruption-adjusted) travel time
+       + λ2 · Var[τ̃_e(t)]    ← travel time variance (reliability)
+       + λ3 · κ_e · σ_e       ← disruption risk
+       + λ4 · CO2(e)          ← emissions (gCO2)
+       + λ5 · Transfers(e)    ← mode-switch penalty (minutes)
 ```
 
-Files to build:
-- `app/routing/cost_function.py` — generalized edge cost
-- `app/routing/cvar_router.py` — CVaR path optimization
-- `app/routing/travel_time.py` — travel time distributions
+Three weight presets are already defined in `cost_function.py`:
+- `TIME_OPTIMAL` — minimise travel time, ignore variance and emissions
+- `RELIABLE` — penalise variance heavily (risk-averse commuter)
+- `ECO` — balance time with emissions
+
+**Natural language explanations:**
+- `app/llm/explain.py` — **TODO**: generate a plain-English justification per recommended route using HGNN attention weights + event summaries (H3 validation)
 
 ---
 
-## 11. Questions
+## 10. Module ownership
 
-Open a GitHub Issue with label `question`. Keep code discussions on GitHub, not WhatsApp — it's searchable and archived.
+| Module | Owner |
+|--------|-------|
+| LLM extraction, HGNN, Bayesian fusion, API, frontend | Nikhil Mishra |
+| Bus transit, multimodal routing, transit data | Lakshya Sharma |
+| HGNN training pipeline, evaluation, severity rules, map matcher, Layer 3 cost function | Ruchi Mishra |

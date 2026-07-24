@@ -662,6 +662,12 @@ def run():
             print(f"\n    [Dedup] Removed {dedup_removed} semantically duplicate events "
                   f"({len(raw_results)} → {len(results)})")
 
+        # Rule-based severity correction
+        from scoring.severity_rules import correct_severities
+        results, n_sev_corrected = correct_severities(results)
+        if n_sev_corrected:
+            print(f"    [SevRule] Corrected {n_sev_corrected} event severities")
+
         confirmation_map = compute_multi_source_confirmation(results)
         confirmed_count = sum(1 for v in confirmation_map.values() if v)
         if confirmed_count > 0:

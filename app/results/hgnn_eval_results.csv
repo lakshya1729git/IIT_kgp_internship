@@ -1,0 +1,1371 @@
+id,event_type,road_name,true_severity,llm_severity,hgnn_severity,llm_correct,hgnn_correct,confidence
+1770,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1769,road_closure,Shakespeare Sarani,medium,low,medium,0,1,0.7525
+1768,road_closure,Ashutosh Mukharjee Road,medium,low,medium,0,1,0.7525
+1767,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7525
+1766,congestion,Gerasim Lebedev Sarani,low,low,low,1,1,0.7925
+1765,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1764,congestion,Fairlie Place,medium,medium,medium,1,1,0.8550
+1763,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1762,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7525
+1761,road_closure,Lala Lajpat Rai Sarani / O C Ganguly Sarani,medium,low,medium,0,1,0.7525
+1760,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+1759,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1758,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7525
+1757,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7525
+1756,road_closure,Rash Behari Avenue,medium,low,medium,0,1,0.7525
+1755,road_closure,Shyama Prasad Mukherjee Road / Kali Temple Road,medium,low,medium,0,1,0.7525
+1754,road_closure,Sahanagar Road / Syama Prasad Mukherjee Road,low,low,medium,1,0,0.7525
+1753,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7525
+1752,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7525
+1751,congestion,Deshpran Sashmal Road / Tollygunge Circular Road,medium,medium,medium,1,1,0.8550
+1750,road_closure,Kali Temple Road,medium,low,medium,0,1,0.7525
+1749,congestion,Strand Road,high,high,high,1,1,0.9175
+1748,congestion,Amar Nath Road / Rajendra Avenue,low,low,low,1,1,0.7925
+1747,congestion,Sahid Khudiram Bose Road,medium,medium,medium,1,1,0.8550
+1746,congestion,Somnath Lahiri Sarani,high,high,high,1,1,0.9175
+1745,construction,Sitanath Bose Lane,low,low,low,1,1,0.7225
+1744,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7325
+1743,congestion,Belvedere Road,medium,medium,medium,1,1,0.8550
+1742,congestion,NH12,low,low,low,1,1,0.7925
+1741,road_closure,Sodepur Brick Field Road,medium,low,high,0,0,0.7725
+1740,road_closure,Santosh Roy Road,medium,low,high,0,0,0.7725
+1739,congestion,NH12,medium,medium,medium,1,1,0.8550
+1738,congestion,Remount Road,medium,medium,medium,1,1,0.8550
+1737,congestion,NH12,medium,medium,medium,1,1,0.8550
+1736,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7225
+1735,road_closure,Kolua School Road,medium,low,high,0,0,0.7225
+1734,construction,NH19,low,low,low,1,1,0.7225
+1733,congestion,Battikal 1st Lane,high,high,high,1,1,0.9175
+1732,road_closure,Nawab Wajid Ali Shah Road / Alif Nagar Lane,low,low,high,1,0,0.7925
+1731,congestion,Bandel Road,high,high,high,1,1,0.9175
+1730,congestion,Bankra Mondal Para Road,high,high,high,1,1,0.9175
+1729,congestion,Bellilious Road / SH15,high,high,high,1,1,0.9175
+1728,congestion,Shimpukur Road,high,high,high,1,1,0.9175
+1727,congestion,K C Mill Lane,high,high,high,1,1,0.9175
+1726,congestion,AH45,medium,medium,high,1,0,0.8550
+1725,congestion,SH15,high,high,high,1,1,0.9175
+1724,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7525
+1723,congestion,SH15,high,high,high,1,1,0.9175
+1722,congestion,AH45,high,high,high,1,1,0.9175
+1721,congestion,Chadni Bagan Road / Mohiary Road,medium,medium,medium,1,1,0.8550
+1720,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+1719,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1718,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7525
+1717,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7525
+1716,congestion,Turf Road,low,low,low,1,1,0.7925
+1715,road_closure,Rash Behari Avenue,medium,low,medium,0,1,0.7525
+1714,road_closure,Shyama Prasad Mukherjee Road / Kali Temple Road,medium,low,medium,0,1,0.7525
+1713,road_closure,Sahanagar Road / Syama Prasad Mukherjee Road,low,low,medium,1,0,0.7525
+1712,congestion,Ashutosh Mukharjee Road / Jawaharlal Nehru Road,medium,medium,medium,1,1,0.8550
+1711,congestion,Deshpran Sashmal Road / Tollygunge Circular Road,medium,medium,medium,1,1,0.8550
+1710,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7525
+1709,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7525
+1708,road_closure,Kali Temple Road,medium,low,medium,0,1,0.7525
+1707,congestion,Lawrence Street,medium,medium,medium,1,1,0.8550
+1706,congestion,Munsi Premchand Sarani,high,high,high,1,1,0.9175
+1705,congestion,Sahid Khudiram Bose Road,high,high,high,1,1,0.9175
+1704,congestion,Jyotish Roy Road,high,high,high,1,1,0.9175
+1703,congestion,Pranbananda Sarani,medium,medium,medium,1,1,0.8550
+1702,congestion,Grand Trunk Road,medium,medium,medium,1,1,0.8550
+1701,congestion,Sambhunath Pandit Street,high,high,high,1,1,0.9175
+1700,congestion,Liluah Station Road,low,low,low,1,1,0.7925
+1699,congestion,Somnath Lahiri Sarani,high,high,high,1,1,0.9175
+1698,construction,Sitanath Bose Lane,low,low,low,1,1,0.7225
+1697,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7325
+1696,road_closure,Santosh Roy Road,medium,low,high,0,0,0.7725
+1695,road_closure,Sodepur Brick Field Road,medium,low,high,0,0,0.7725
+1694,congestion,NH12,medium,medium,medium,1,1,0.8550
+1693,congestion,NH12,low,low,low,1,1,0.7925
+1692,congestion,AH45,medium,medium,high,1,0,0.8550
+1691,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7225
+1690,road_closure,Kolua School Road,medium,low,high,0,0,0.7225
+1689,congestion,Alipore,high,high,high,1,1,0.9175
+1688,congestion,Taratala Road,high,high,high,1,1,0.9175
+1687,congestion,Bengal Para 2nd Lane,high,high,high,1,1,0.9175
+1686,construction,NH19,low,low,low,1,1,0.7225
+1685,congestion,Sri Ramkrishna Dev Sarani,low,low,low,1,1,0.7925
+1684,congestion,Bandel Road,high,high,high,1,1,0.9175
+1683,congestion,Bellilious Road / SH15,high,high,high,1,1,0.9175
+1682,congestion,Bankra Mondal Para Road,high,high,high,1,1,0.9175
+1681,congestion,K C Mill Lane,high,high,high,1,1,0.9175
+1680,congestion,Shimpukur Road,medium,medium,medium,1,1,0.8550
+1679,congestion,AH45,low,low,low,1,1,0.7925
+1678,congestion,SH6,medium,medium,high,1,0,0.8550
+1677,congestion,BBT Road,high,high,high,1,1,0.9175
+1676,congestion,SH15,high,high,high,1,1,0.9175
+1675,congestion,SH15,high,high,high,1,1,0.9175
+1674,congestion,Moulana Abul Kalam Azad Road / H M Basu Road,low,low,low,1,1,0.7925
+1673,congestion,AH45,high,high,high,1,1,0.9175
+1672,congestion,Chadni Bagan Road / Mohiary Road,medium,medium,medium,1,1,0.8550
+1671,congestion,AH45,medium,medium,high,1,0,0.8550
+1670,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1669,congestion,Fairlie Place,high,high,high,1,1,0.9175
+1668,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1667,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7525
+1666,road_closure,Lala Lajpat Rai Sarani / O C Ganguly Sarani,medium,low,medium,0,1,0.7525
+1665,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+1664,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7525
+1663,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7525
+1662,congestion,Strand Road / Harish Mukherjee Road,medium,medium,medium,1,1,0.8550
+1661,congestion,Turf Road,low,low,low,1,1,0.7925
+1660,congestion,Chakdha Dhali Para,high,high,high,1,1,0.9175
+1659,road_closure,Rash Behari Avenue,medium,low,medium,0,1,0.7525
+1658,road_closure,Shyama Prasad Mukherjee Road / Kali Temple Road,medium,low,medium,0,1,0.7525
+1657,road_closure,Sahanagar Road / Syama Prasad Mukherjee Road,low,low,medium,1,0,0.7525
+1656,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7525
+1655,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7525
+1654,congestion,Mali Panchghara,medium,medium,medium,1,1,0.8550
+1653,road_closure,Kali Temple Road,medium,low,medium,0,1,0.7525
+1652,congestion,Lawrence Street,medium,medium,medium,1,1,0.8550
+1651,congestion,Munsi Premchand Sarani,high,high,high,1,1,0.9175
+1650,congestion,Sahid Khudiram Bose Road,medium,medium,medium,1,1,0.8550
+1649,congestion,Jyotish Roy Road,high,high,high,1,1,0.9175
+1648,congestion,Reformatory Street,high,high,high,1,1,0.9175
+1647,congestion,Debendralal Khan Road / Ronald Ross Sarani,medium,medium,medium,1,1,0.8550
+1646,congestion,Liluah Station Road,low,low,low,1,1,0.7925
+1645,congestion,Somnath Lahiri Sarani,high,high,high,1,1,0.9175
+1644,construction,Sitanath Bose Lane,low,low,low,1,1,0.7225
+1643,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7325
+1642,congestion,Judges Court Road,high,high,high,1,1,0.9175
+1641,congestion,NH12,high,high,high,1,1,0.9175
+1640,road_closure,Sodepur Brick Field Road,medium,low,high,0,0,0.7725
+1639,road_closure,Santosh Roy Road,medium,low,high,0,0,0.7725
+1638,congestion,Mayurbhanj Road,high,high,high,1,1,0.9175
+1637,congestion,Lakshmi Narayan Chakraborty Lane,low,low,low,1,1,0.7925
+1636,congestion,AH45,medium,medium,high,1,0,0.8550
+1635,road_closure,Kolua School Road,medium,low,high,0,0,0.7225
+1634,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7225
+1633,construction,NH19,low,low,low,1,1,0.7225
+1632,congestion,Budg Budg Trunk Road,high,high,high,1,1,0.9175
+1631,congestion,Bandel Road,high,high,high,1,1,0.9175
+1630,congestion,Bankra Mondal Para Road,high,high,high,1,1,0.9175
+1629,congestion,Bellilious Road / SH15,high,high,high,1,1,0.9175
+1628,congestion,K C Mill Lane,high,high,high,1,1,0.9175
+1627,congestion,K C Mill Lane / Slaughter House Road,high,high,high,1,1,0.9175
+1626,congestion,SH6,medium,medium,high,1,0,0.8550
+1625,congestion,SH15,high,high,high,1,1,0.9175
+1624,congestion,SH15,high,high,high,1,1,0.9175
+1623,congestion,AH45,medium,medium,high,1,0,0.8550
+1622,congestion,SH6,medium,medium,high,1,0,0.8550
+1621,congestion,Swami Vivekananda Road,low,low,low,1,1,0.7925
+1620,congestion,Rishi Bankim Chandra Road,medium,medium,medium,1,1,0.8550
+1619,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+1618,congestion,Deshpran Sashmal Road / Tollygunge Circular Road,medium,medium,medium,1,1,0.8550
+1617,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+1616,congestion,Biplabi Ganesh Ghosh Sarani / Kali Ghat Road,high,high,high,1,1,0.9175
+1615,congestion,Karl Marx Sarani / Munsi Premchand Sarani,high,high,high,1,1,0.8975
+1614,congestion,Munsi Premchand Sarani,low,low,low,1,1,0.7925
+1613,congestion,Acharya Jagadish Chandra Bose Road,medium,medium,medium,1,1,0.8550
+1612,congestion,Pranbananda Sarani,low,low,low,1,1,0.7925
+1611,congestion,Sambhunath Pandit Street,high,high,high,1,1,0.9175
+1610,congestion,Karl Marx Sarani,high,high,high,1,1,0.9175
+1609,congestion,Alipore Road,high,high,high,1,1,0.9175
+1608,congestion,Reformatory Street,low,low,low,1,1,0.7925
+1607,congestion,Belvedere Road,high,high,high,1,1,0.9175
+1606,congestion,Belvedere Road,high,high,high,1,1,0.9175
+1605,congestion,Judges Court Road,high,high,high,1,1,0.9175
+1604,congestion,Judges Court Road,high,high,high,1,1,0.9175
+1603,construction,Sitanath Bose Lane,low,low,low,1,1,0.7225
+1602,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7325
+1601,congestion,Alipore Park Road / Burdwan Road,medium,medium,medium,1,1,0.8550
+1600,congestion,National Library Avenue,high,high,high,1,1,0.9175
+1599,congestion,Khidirpur Road / St Georges Gate Road,high,high,high,1,1,0.8975
+1598,congestion,SH6,low,low,low,1,1,0.7925
+1597,congestion,Alipore Avenue / Raja Santosh Road,high,high,high,1,1,0.9175
+1596,congestion,NH12,medium,medium,medium,1,1,0.8550
+1595,congestion,NH12,high,high,high,1,1,0.9175
+1594,congestion,Sodepur Brick Field Road,medium,medium,high,1,0,0.8550
+1593,congestion,NH12,high,high,high,1,1,0.8975
+1592,congestion,Sudhasindhu Banerjee Road,high,high,high,1,1,0.9175
+1591,congestion,Natobar Paul Road,medium,medium,medium,1,1,0.8550
+1590,congestion,Y Road,high,high,high,1,1,0.9175
+1589,congestion,NH12,medium,medium,medium,1,1,0.8550
+1588,congestion,NH12,high,high,high,1,1,0.9175
+1587,congestion,Bengal Para 2nd Lane,medium,medium,medium,1,1,0.8550
+1586,congestion,Mahendra Bhattacharya Road,medium,medium,medium,1,1,0.8550
+1585,construction,NH19,low,low,low,1,1,0.7225
+1584,congestion,NH12,high,high,high,1,1,0.8975
+1583,congestion,Brojonath Lahari Lane,medium,medium,medium,1,1,0.8550
+1582,congestion,Santoshpur Station Road,high,high,high,1,1,0.9175
+1581,congestion,SH6,medium,medium,high,1,0,0.8550
+1580,congestion,Bichali Ghat Road,low,low,low,1,1,0.7925
+1579,congestion,Bankra Mondal Para Road,medium,medium,medium,1,1,0.8550
+1578,congestion,Bellilious Road / SH15,low,low,low,1,1,0.7925
+1577,congestion,Howrah Station Road,high,high,high,1,1,0.9175
+1576,congestion,Hastings,medium,medium,medium,1,1,0.8550
+1575,congestion,NH12,high,high,high,1,1,0.9175
+1574,congestion,NH12,medium,medium,medium,1,1,0.8550
+1573,congestion,SH6,medium,medium,high,1,0,0.8550
+1572,congestion,SH6,high,high,high,1,1,0.9175
+1571,congestion,AH45,high,high,high,1,1,0.9175
+1570,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+1569,congestion,Munsi Premchand Sarani,high,high,high,1,1,0.9175
+1568,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+1567,congestion,Kiran Shankar Roy Road,medium,medium,medium,1,1,0.8550
+1566,congestion,Indira Gandhi Sarani / Khidirpur Road,high,high,high,1,1,0.9175
+1565,congestion,Karl Marx Sarani / Munsi Premchand Sarani,high,high,high,1,1,0.9175
+1564,congestion,Pranbananda Sarani,high,high,high,1,1,0.9175
+1563,congestion,Acharya Jagadish Chandra Bose Road,low,low,low,1,1,0.7925
+1562,congestion,Biplabi Ganesh Ghosh Sarani / Kali Ghat Road,high,high,high,1,1,0.9175
+1561,congestion,Moulana Abul Kalam Azad Road / H M Basu Road,high,high,high,1,1,0.9175
+1560,congestion,Sambhunath Pandit Street,high,high,high,1,1,0.9175
+1559,congestion,Debendralal Khan Road,medium,medium,medium,1,1,0.8550
+1558,congestion,Madan Pal Lane / Turf Road,high,high,high,1,1,0.9175
+1557,congestion,Karl Marx Sarani,high,high,high,1,1,0.9175
+1556,congestion,Acharya Jagadish Chandra Bose Road / Ronald Ross Sarani,high,high,high,1,1,0.9175
+1555,congestion,Sambhunath Pandit Street,low,low,low,1,1,0.7925
+1554,congestion,Alipore Road,high,high,high,1,1,0.9175
+1553,congestion,Reformatory Street,high,high,high,1,1,0.9175
+1552,congestion,Bijoy Bose Road,high,high,high,1,1,0.9175
+1551,congestion,Kabi Dinesh Das Sarani / Chetla Hat Road,high,high,high,1,1,0.9175
+1550,congestion,Belvedere Road,high,high,high,1,1,0.9175
+1549,congestion,Biplabi Kanai Bhattacharya Sarani,high,high,high,1,1,0.9175
+1548,congestion,Belvedere Road,high,high,high,1,1,0.9175
+1547,congestion,Alipore Road,high,high,high,1,1,0.9175
+1546,congestion,Debendralal Khan Road,high,high,high,1,1,0.9175
+1545,congestion,Belvedere Road,high,high,high,1,1,0.9175
+1544,construction,Sitanath Bose Lane,low,low,low,1,1,0.7225
+1543,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7325
+1542,congestion,Diamond Harbour Road,medium,medium,high,1,0,0.8550
+1541,congestion,National Library Avenue,medium,medium,medium,1,1,0.8550
+1540,congestion,Judges Court Road,high,high,high,1,1,0.9175
+1539,congestion,Alipore Road,medium,medium,medium,1,1,0.8550
+1538,congestion,Khidirpur Road / St Georges Gate Road,high,high,high,1,1,0.9175
+1537,congestion,NH12,high,medium,medium,0,0,0.8550
+1536,congestion,NH12,medium,medium,medium,1,1,0.8350
+1535,congestion,NH12,high,high,high,1,1,0.8975
+1534,congestion,Alipore,high,high,high,1,1,0.9175
+1533,congestion,NH12,high,high,high,1,1,0.9175
+1532,congestion,Mahendra Bhattacharya Road,high,high,high,1,1,0.9175
+1531,congestion,NH19,low,low,low,1,1,0.7925
+1530,congestion,NH12,high,high,high,1,1,0.8975
+1529,congestion,Brojonath Lahari Lane,high,high,high,1,1,0.9175
+1528,congestion,NH12,high,high,high,1,1,0.9175
+1527,congestion,NH12,high,high,high,1,1,0.9175
+1526,congestion,Hastings,high,high,high,1,1,0.9175
+1525,congestion,NH12,high,high,high,1,1,0.9175
+1524,congestion,Bellilious Road / SH15,low,low,low,1,1,0.7925
+1523,congestion,AH45,low,low,low,1,1,0.7925
+1122,congestion,Mirza Galib Street,high,high,high,1,1,0.9175
+1121,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+1120,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+1119,congestion,Strand Road,high,high,high,1,1,0.9175
+1118,congestion,Fairlie Place,high,high,high,1,1,0.8975
+1117,congestion,Biplabi Trailokya Maharaj Sarani,high,high,high,1,1,0.9175
+1116,congestion,Guru Nanak Sarani,high,high,high,1,1,0.9175
+1115,congestion,SH6,high,high,high,1,1,0.9175
+1114,congestion,Liluah,high,high,high,1,1,0.9175
+1113,congestion,Grand Trunk Road,high,high,high,1,1,0.9175
+1112,congestion,Deshpran Sashmal Road / Kali Prasana Roy Lane,medium,medium,medium,1,1,0.8550
+1111,congestion,Khidirpur Road,high,high,high,1,1,0.9175
+1110,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+1109,congestion,Kiran Shankar Roy Road,high,high,high,1,1,0.9175
+1108,congestion,Pyari Mohan Roy Road / Rakhal Das Auddy Road,medium,medium,medium,1,1,0.8550
+1107,congestion,M C Gosh Lane,low,low,low,1,1,0.7925
+1106,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+1105,congestion,Bellilious Road,high,high,high,1,1,0.9175
+1104,congestion,Alipore Park Road / Burdwan Road,high,high,high,1,1,0.9175
+1103,congestion,Diamond Harbour Road,medium,medium,high,1,0,0.8550
+1102,congestion,NH12,high,high,high,1,1,0.9175
+1101,congestion,NH12,medium,medium,medium,1,1,0.8550
+1100,congestion,Chapala Devi Road / Birajmoyee Road,high,high,high,1,1,0.9175
+1099,congestion,NH12,medium,medium,medium,1,1,0.8550
+1098,construction,NH19,low,low,low,1,1,0.7225
+1097,congestion,Mahendra Bhattacharya Road,high,high,high,1,1,0.9175
+1096,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+1095,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+1094,congestion,Gerasim Lebedev Sarani,medium,medium,medium,1,1,0.8550
+1093,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+1092,congestion,Gurupada Halder Road,high,high,high,1,1,0.9175
+1091,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+1090,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+1089,congestion,Sadananda Road / Apurba Mitter Road,high,high,high,1,1,0.9175
+1088,congestion,Indira Gandhi Sarani,medium,medium,medium,1,1,0.8550
+1087,congestion,Alipore Avenue / Alipore Park Road,high,high,high,1,1,0.9175
+1086,congestion,Council House Street,high,high,high,1,1,0.9175
+1085,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+1084,congestion,Council House Street / Gonernment Place North Road,medium,medium,medium,1,1,0.8550
+1083,congestion,Strand Road,high,high,high,1,1,0.9175
+1082,congestion,Moulana Abul Kalam Azad Road / H M Basu Road,low,low,low,1,1,0.7925
+1081,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+1080,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+1079,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+1078,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1077,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1076,construction,NH19,low,low,low,1,1,0.7225
+1075,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+1074,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+1073,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+1072,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+1071,road_closure,5th Lane,low,low,high,1,0,0.7225
+1070,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+1069,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+1068,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+1067,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+1066,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+1065,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+1064,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+1063,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+1062,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+1061,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+1060,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+1059,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+1058,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+1057,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+1056,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+1055,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+1054,congestion,Belgachia,high,high,high,1,1,0.9175
+1053,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+1052,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+1051,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1050,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+1049,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1048,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+1047,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+1046,construction,NH19,low,low,low,1,1,0.7225
+1045,congestion,NH19,high,high,high,1,1,0.9175
+1044,road_closure,B C Road,medium,low,high,0,0,0.7725
+1043,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+1042,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+1041,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+1040,construction,NH19,low,low,low,1,1,0.7225
+1039,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+1038,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+1037,congestion,Rajarhat,high,high,high,1,1,0.9175
+1036,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+1035,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+1034,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+1033,road_closure,5th Lane,low,low,high,1,0,0.7225
+1032,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+1031,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+1030,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+1029,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+1028,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+1027,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+1026,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+1025,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+1024,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+1023,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+1022,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+1021,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+1020,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+1019,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+1018,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+1017,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+1016,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+1015,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+1014,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1013,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+1012,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+1011,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+1010,construction,NH19,low,low,low,1,1,0.7225
+1009,construction,NH19,low,low,low,1,1,0.7225
+1008,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+1007,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+1006,road_closure,B C Road,medium,low,high,0,0,0.7725
+1005,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+1004,congestion,NH19,high,high,high,1,1,0.9175
+1003,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+1002,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+1001,congestion,Street No 326,high,high,high,1,1,0.9175
+1000,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+999,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+998,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+997,road_closure,5th Lane,low,low,high,1,0,0.7225
+996,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+995,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+994,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+993,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+992,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+991,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+990,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+989,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+988,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+987,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+986,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+985,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+984,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+983,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+982,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+981,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+980,congestion,Netaji Subhash Chandra Bose Road,high,high,high,1,1,0.9175
+979,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+978,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+977,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+976,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+975,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+974,construction,NH19,low,low,low,1,1,0.7225
+973,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+972,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+971,road_closure,B C Road,medium,low,high,0,0,0.7725
+970,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+969,construction,NH19,low,low,low,1,1,0.7225
+968,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+967,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+966,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+965,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+964,road_closure,5th Lane,low,low,high,1,0,0.7225
+963,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+962,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+961,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+960,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+959,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+958,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+957,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+956,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+955,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+954,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+953,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+952,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+951,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+950,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+949,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+948,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+947,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+946,congestion,Netaji Subhash Chandra Bose Road,high,high,high,1,1,0.9175
+945,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+944,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+943,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+942,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+941,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+940,construction,NH19,low,low,low,1,1,0.7225
+939,road_closure,B C Road,medium,low,high,0,0,0.7725
+938,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+937,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+936,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+935,construction,NH19,low,low,low,1,1,0.7225
+934,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+933,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+932,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+931,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+930,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+929,road_closure,5th Lane,low,low,high,1,0,0.7225
+928,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+927,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+926,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+925,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+924,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+923,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+922,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+921,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+920,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+919,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+918,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+917,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+916,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+915,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+914,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+913,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+912,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+911,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+910,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+909,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+908,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+907,construction,NH19,low,low,low,1,1,0.7225
+906,road_closure,B C Road,medium,low,high,0,0,0.7725
+905,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+904,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+903,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+902,construction,NH19,low,low,low,1,1,0.7225
+901,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+900,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+899,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+898,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+897,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+896,road_closure,5th Lane,low,low,high,1,0,0.7225
+895,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+894,road_closure,Mukundapur,medium,low,high,0,0,0.7225
+893,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+892,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+891,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7225
+890,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7225
+889,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+888,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+887,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+886,road_closure,Garf Main Road / Ramlalbazara Road,high,low,high,0,1,0.7325
+885,road_closure,Vivekananda Sarani,high,low,high,0,1,0.7525
+884,road_closure,Balai Chandra Sen Road,medium,low,medium,0,1,0.7525
+883,road_closure,Surendra Mohan Bose Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+882,road_closure,Tara Pukur Main Road / Fuleswari Road,medium,low,medium,0,1,0.7525
+881,road_closure,Sen Bagan 2nd Lane,low,low,medium,1,0,0.7525
+880,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+879,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+878,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+877,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+876,road_closure,Khidirpur Road,medium,low,medium,0,1,0.7525
+875,construction,Sitanath Bose Lane,low,low,low,1,1,0.7325
+874,construction,NH19,low,low,low,1,1,0.7225
+873,construction,NH19,low,low,low,1,1,0.7225
+872,road_closure,B C Road,medium,low,high,0,0,0.7725
+871,road_closure,Diamond Harbour Road,medium,low,high,0,0,0.7725
+870,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+869,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+868,congestion,Sambhunath Pandit Street,high,high,high,1,1,0.9175
+867,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7325
+866,road_closure,Taratala Road,medium,low,medium,0,1,0.7325
+865,congestion,Kona Expressway,high,high,high,1,1,0.9175
+864,congestion,Mahatma Gandhi Road / Monohar Das Street,low,low,low,1,1,0.7925
+863,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8350
+862,congestion,Lal Bazar Street,medium,medium,medium,1,1,0.8550
+861,congestion,Kali Krishna Tagore Street,low,low,low,1,1,0.7925
+860,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+859,road_closure,Anandilal Poddar Sarani,medium,low,medium,0,1,0.7725
+858,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+857,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7725
+856,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7725
+855,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+854,congestion,Fairlie Place,high,high,high,1,1,0.8975
+853,congestion,Hare Street,high,high,high,1,1,0.9175
+852,congestion,Howrah Station Road,medium,medium,medium,1,1,0.8550
+851,congestion,Council House Street / Kiran Shankar Roy Road,medium,medium,medium,1,1,0.8550
+850,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7725
+849,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+848,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+847,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+846,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+845,congestion,Hare Street,high,high,high,1,1,0.9175
+844,congestion,Strand Road,high,high,high,1,1,0.9175
+843,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+842,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7725
+841,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+840,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+839,congestion,Kiran Shankar Roy Road,high,high,high,1,1,0.9175
+838,congestion,Munsi Premchand Sarani,low,low,low,1,1,0.7925
+837,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+836,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7925
+835,congestion,Nilamani Mullick Road,high,high,high,1,1,0.9175
+834,congestion,SH6,low,low,low,1,1,0.7925
+833,construction,NH19,low,low,low,1,1,0.7225
+832,congestion,NH19,medium,medium,high,1,0,0.8550
+831,congestion,Kona Expressway,low,low,low,1,1,0.7925
+830,construction,NH19,low,low,low,1,1,0.7225
+829,congestion,NH12,medium,medium,medium,1,1,0.8550
+828,congestion,Gerasim Lebedev Sarani,low,low,low,1,1,0.7925
+827,congestion,Acharya Jagadish Chandra Bose Road,medium,medium,medium,1,1,0.8550
+826,congestion,Ronald Ross Sarani,medium,medium,medium,1,1,0.8550
+825,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+824,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7725
+823,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+822,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7725
+821,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+820,congestion,Debendra Ghosh Road / Paddapukur Road,high,high,high,1,1,0.9175
+819,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+818,congestion,SH6,medium,medium,high,1,0,0.8550
+817,congestion,Bankra Mondal Para Road,low,low,low,1,1,0.7925
+816,congestion,Mohanpur Road,medium,medium,high,1,0,0.8550
+815,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8550
+814,congestion,Mahatma Gandhi Road / Monohar Das Street,medium,medium,medium,1,1,0.8550
+813,congestion,Lal Bazar Street,medium,medium,medium,1,1,0.8550
+812,congestion,Kali Krishna Tagore Street,low,low,low,1,1,0.7925
+811,congestion,Bentinck Street / Bipin Behari Ganguly Street,high,high,high,1,1,0.9175
+810,congestion,Strand Road / Jaganath Ghat Road,high,high,high,1,1,0.9175
+809,congestion,Mr Bharat Ghat Road / Meer Bahar Ghat Street,high,high,high,1,1,0.9175
+808,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+807,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+806,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7725
+805,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7725
+804,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+803,congestion,Fairlie Place,high,high,high,1,1,0.8975
+802,congestion,Jawaharlal Nehru Road / Surendra Nath Banerjee Road,high,high,high,1,1,0.9175
+801,congestion,Raja Woodmount Street,high,high,high,1,1,0.9175
+800,congestion,Strand Road,high,high,high,1,1,0.9175
+799,congestion,P W D Road,low,low,low,1,1,0.7925
+798,congestion,Hari Mohan Basu Road / Rishi Bankim Chandra Road,medium,medium,medium,1,1,0.8550
+797,congestion,BBD Bag South Road / Hare Street,high,high,high,1,1,0.9175
+796,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7725
+795,congestion,BBD Bag South Road / Council House Street,medium,medium,medium,1,1,0.8550
+794,congestion,Hare Street,medium,medium,medium,1,1,0.8550
+793,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+792,congestion,Strand Road,high,high,high,1,1,0.9175
+791,congestion,Hare Street,high,high,high,1,1,0.9175
+790,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+789,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7725
+788,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+787,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+786,congestion,Strand Road,high,high,high,1,1,0.9175
+785,congestion,Munsi Premchand Sarani,low,low,low,1,1,0.7925
+784,congestion,Moulana Abul Kalam Azad Road / H M Basu Road,medium,medium,medium,1,1,0.8550
+783,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+782,congestion,Karl Marx Sarani,high,high,high,1,1,0.9175
+781,congestion,SH6,medium,medium,high,1,0,0.8550
+780,construction,NH19,low,low,low,1,1,0.7225
+779,congestion,NH12,low,low,low,1,1,0.7725
+778,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+777,congestion,Gerasim Lebedev Sarani,low,low,low,1,1,0.7925
+776,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+775,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+774,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7725
+773,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+772,congestion,Acharya Jagadish Chandra Bose Road,high,high,high,1,1,0.9175
+771,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+770,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+769,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+768,congestion,Kona Expressway,low,low,low,1,1,0.7925
+767,construction,NH19,low,low,low,1,1,0.7225
+766,congestion,SH15,high,high,high,1,1,0.9175
+765,congestion,Nandalal Basu Sarani,high,high,high,1,1,0.9175
+764,congestion,Nimtala Ghat Street,low,low,low,1,1,0.7925
+763,congestion,Rabindra Sarani / Sunyat Sen Street,medium,medium,medium,1,1,0.8550
+762,congestion,Kali Krishna Tagore Street,low,low,low,1,1,0.7925
+761,congestion,Lal Bazar Street,high,high,high,1,1,0.9175
+760,congestion,Government Place East Road / Woodmount Street,medium,medium,medium,1,1,0.8550
+759,congestion,Burtalla Road / Nalini Seth Street,medium,medium,medium,1,1,0.8550
+758,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+757,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+756,congestion,Government Place East Road / Strand Road,high,high,high,1,1,0.9175
+755,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7725
+754,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7725
+753,congestion,Netaji Subhash Road,medium,medium,medium,1,1,0.8550
+752,congestion,Fairlie Place,high,high,high,1,1,0.8975
+751,congestion,Jawaharlal Nehru Road / Surendra Nath Banerjee Road,medium,medium,medium,1,1,0.8550
+750,congestion,Raja Woodmount Street,high,high,high,1,1,0.9175
+749,congestion,BBD Bag East Road / Old Court House Road,high,high,high,1,1,0.9175
+748,congestion,Indira Gandhi Sarani,high,high,high,1,1,0.9175
+747,congestion,BBD Bag South Road / R N Mukherjee Road,low,low,low,1,1,0.7925
+746,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+745,congestion,Strand Road,high,high,high,1,1,0.9175
+744,road_closure,BBD Bag South Road,medium,low,medium,0,1,0.7925
+743,congestion,BBD Bag South Road / Council House Street,high,high,high,1,1,0.9175
+742,congestion,Hare Street,medium,medium,medium,1,1,0.8550
+741,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+740,congestion,Strand Road,high,high,high,1,1,0.9175
+739,congestion,Hare Street,high,high,high,1,1,0.9175
+738,congestion,Strand Road,low,low,low,1,1,0.7925
+737,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+736,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7725
+735,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+734,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+733,congestion,Munsi Premchand Sarani,low,low,low,1,1,0.7925
+732,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+731,construction,NH19,low,low,low,1,1,0.7225
+730,congestion,NH19,low,low,low,1,1,0.7925
+729,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7725
+728,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7725
+727,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+726,congestion,Park Street,low,low,low,1,1,0.7925
+725,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+724,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+723,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+722,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+721,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+720,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+719,congestion,Chittaranjan Avenue,high,high,high,1,1,0.9175
+718,congestion,NH12,medium,medium,medium,1,1,0.8350
+717,construction,NH19,low,low,low,1,1,0.7225
+716,congestion,SH15,high,high,high,1,1,0.9175
+715,congestion,Nimtala Ghat Street,low,low,low,1,1,0.7925
+714,congestion,Biplabi Trailokya Maharaj Sarani / Lal Bazar Street,medium,medium,medium,1,1,0.8550
+713,congestion,Kali Krishna Tagore Street,medium,medium,medium,1,1,0.8550
+712,congestion,Burtalla Road / Nalini Seth Street,medium,medium,medium,1,1,0.8550
+711,congestion,Strand Road,high,high,high,1,1,0.9175
+710,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+709,congestion,Shobha Bazar Street,medium,medium,medium,1,1,0.8550
+708,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+707,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+706,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7725
+705,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7725
+704,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+703,congestion,Fairlie Place,high,high,high,1,1,0.8975
+702,congestion,Jawaharlal Nehru Road / Surendra Nath Banerjee Road,high,high,high,1,1,0.9175
+701,congestion,Raja Woodmount Street,high,high,high,1,1,0.9175
+700,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+699,congestion,Strand Road,high,high,high,1,1,0.9175
+698,congestion,Strand Road,high,high,high,1,1,0.9175
+697,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+696,congestion,Hare Street,high,high,high,1,1,0.9175
+695,congestion,Council House Street,medium,medium,medium,1,1,0.8350
+694,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+693,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7725
+692,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+691,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+690,congestion,Tollygunge Circular Road,medium,medium,medium,1,1,0.8550
+689,congestion,Munsi Premchand Sarani,medium,medium,medium,1,1,0.8550
+688,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+687,congestion,Diamond Harbour Road,medium,medium,high,1,0,0.8550
+686,construction,NH19,low,low,low,1,1,0.7225
+685,congestion,Alipore,high,high,high,1,1,0.9175
+684,congestion,NH12,low,low,low,1,1,0.7925
+683,congestion,NH12,low,low,low,1,1,0.7725
+682,congestion,NH19,medium,medium,high,1,0,0.8550
+681,construction,NH19,low,low,low,1,1,0.7225
+680,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+679,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7725
+678,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7725
+677,congestion,Shyama Prasad Mukherjee Road / Kali Ghat Road,low,low,low,1,1,0.7925
+676,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+675,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+674,congestion,Ashutosh Mukharjee Road / Lala Lajpat Rai Sarani,high,high,high,1,1,0.9175
+673,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+672,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7725
+671,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+670,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+669,congestion,Bow Barracks,high,high,high,1,1,0.9175
+668,congestion,NH12,low,low,low,1,1,0.7925
+667,congestion,Amathar,low,low,low,1,1,0.7925
+666,congestion,NH12,medium,medium,medium,1,1,0.8550
+665,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+664,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+663,congestion,Ganesh Chandra Avenue / Bentinck Street,high,high,high,1,1,0.9175
+662,congestion,Maha Rana Pratap Sarani / Radha Bazaar Street,high,high,high,1,1,0.9175
+661,congestion,Ganesh Chandra Avenue / Bentinck Street,medium,medium,medium,1,1,0.8550
+660,congestion,Bow Barracks,high,high,high,1,1,0.9175
+659,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+658,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+657,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+656,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+655,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+654,congestion,Government Place East Road / Strand Road,high,high,high,1,1,0.9175
+653,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+652,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7725
+651,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+650,congestion,Fairlie Place,high,high,high,1,1,0.8975
+649,congestion,Raja Woodmount Street,high,high,high,1,1,0.9175
+648,congestion,Jaganath Ghat Road,low,low,low,1,1,0.7925
+647,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+646,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+645,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+644,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7725
+643,congestion,Debendra Ghosh Road / Paddapukur Road,medium,medium,medium,1,1,0.8550
+642,congestion,Hare Street,high,high,high,1,1,0.9175
+641,congestion,Council House Street,medium,medium,medium,1,1,0.8350
+640,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+639,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7725
+638,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7725
+637,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+636,congestion,Munsi Premchand Sarani,low,low,low,1,1,0.7925
+635,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+634,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+633,congestion,Karl Marx Sarani,high,high,high,1,1,0.9175
+632,congestion,Diamond Harbour Road,low,low,high,1,0,0.7925
+631,construction,NH19,low,low,low,1,1,0.7225
+630,congestion,NH12,medium,medium,medium,1,1,0.8350
+629,congestion,NH19,low,low,low,1,1,0.7925
+628,construction,NH19,low,low,low,1,1,0.7225
+627,congestion,Nimtala Ghat Street,high,high,high,1,1,0.9175
+626,congestion,Rabindra Sarani / Sunyat Sen Street,medium,medium,medium,1,1,0.8550
+625,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+624,congestion,Old China Bazar Street,high,high,high,1,1,0.9175
+623,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+622,congestion,Kali Krishna Tagore Street,high,high,high,1,1,0.9175
+621,congestion,BBD Bag South Road / Council House Street,low,low,low,1,1,0.7925
+620,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+619,congestion,Strand Road,high,high,high,1,1,0.9175
+618,congestion,NH12,medium,medium,medium,1,1,0.8550
+617,congestion,NH12,high,high,high,1,1,0.9175
+616,congestion,NH12,medium,medium,medium,1,1,0.8550
+615,congestion,Biplabi Trailokya Maharaj Sarani / Lal Bazar Street,low,low,low,1,1,0.7925
+614,congestion,Radha Bazar Lane,high,high,high,1,1,0.9175
+613,congestion,Mr Bharat Ghat Road / Strand Road,high,high,high,1,1,0.9175
+612,congestion,Kali Krishna Tagore Street,high,high,high,1,1,0.9175
+611,congestion,Government Place East Road / Woodmount Street,medium,medium,medium,1,1,0.8550
+610,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+609,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+608,congestion,Maha Rana Pratap Sarani,medium,medium,medium,1,1,0.8550
+607,congestion,Government Place East Road / Strand Road,medium,medium,medium,1,1,0.8550
+606,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+605,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+604,congestion,Fairlie Place,high,high,high,1,1,0.8975
+603,congestion,BBD Bag East Road,high,high,high,1,1,0.9175
+602,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+601,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+600,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+599,congestion,Diamond Harbour Road,high,high,high,1,1,0.9175
+598,construction,NH19,low,low,low,1,1,0.7225
+597,congestion,Kona Expressway,low,low,low,1,1,0.7925
+596,congestion,NH12,medium,medium,medium,1,1,0.8350
+595,construction,NH19,low,low,low,1,1,0.7225
+594,congestion,Gardenrich Road,high,high,high,1,1,0.9175
+593,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+592,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+591,congestion,Gonernment Place North Road / Kiran Shankar Roy Road,high,high,high,1,1,0.9175
+590,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+589,congestion,Council House Street,medium,medium,medium,1,1,0.8350
+588,congestion,Clive Row,high,high,high,1,1,0.9175
+587,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+586,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+585,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8550
+584,congestion,Chittaranjan Avenue,medium,medium,medium,1,1,0.8550
+583,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+582,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7925
+581,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+580,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+579,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+578,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+577,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+576,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+575,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+574,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+573,congestion,Strand Road,high,high,high,1,1,0.9175
+572,congestion,Strand Road / Biplabi Rash Behari Bose Road,medium,medium,medium,1,1,0.8550
+571,congestion,Council House Street / Gonernment Place North Road,medium,medium,medium,1,1,0.8550
+570,congestion,Colootola Street / Rabindra Sarani,medium,medium,medium,1,1,0.8550
+569,congestion,Rabindra Sarani / Sunyat Sen Street,medium,medium,medium,1,1,0.8550
+568,congestion,NH12,low,low,low,1,1,0.7725
+567,congestion,Santra Gachi,low,low,low,1,1,0.7925
+566,congestion,NH12,medium,medium,medium,1,1,0.8550
+565,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+564,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+563,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+562,congestion,Rabindra Sarani / Sunyat Sen Street,medium,medium,medium,1,1,0.8550
+561,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+560,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+559,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8550
+558,congestion,BBD Bag East Road / Old Court House Road,high,high,high,1,1,0.9175
+557,congestion,Council House Street,high,high,high,1,1,0.9175
+556,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+555,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+554,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+553,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+552,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7925
+551,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+550,congestion,Surendra Nath Banerjee Road / Bertram Street,medium,medium,medium,1,1,0.8550
+549,congestion,Pyari Mohan Roy Road / Rakhal Das Auddy Road,medium,medium,medium,1,1,0.8550
+548,congestion,Council House Street / Gonernment Place North Road,medium,medium,medium,1,1,0.8550
+547,congestion,Strand Road,high,high,high,1,1,0.9175
+546,congestion,Council House Street,high,high,high,1,1,0.9175
+545,congestion,Old China Bazar Street,low,low,low,1,1,0.7925
+544,congestion,Turf Road,high,high,high,1,1,0.9175
+543,congestion,NH12,medium,medium,medium,1,1,0.8550
+542,construction,NH19,low,low,low,1,1,0.7225
+541,congestion,NH12,low,low,low,1,1,0.7725
+540,congestion,Strand Road,low,low,low,1,1,0.7925
+539,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+538,congestion,Chittaranjan Avenue / Prafulla Sarkar Street,high,high,high,1,1,0.9175
+537,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7925
+536,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+535,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7925
+534,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+533,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+532,congestion,Park Street,medium,medium,medium,1,1,0.8550
+531,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+530,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+529,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+528,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+527,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+526,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+525,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+524,congestion,Chittaranjan Avenue,medium,medium,medium,1,1,0.8550
+523,congestion,Bow Barracks,high,high,high,1,1,0.9175
+522,congestion,Maha Rana Pratap Sarani,medium,medium,medium,1,1,0.8550
+521,congestion,Mahatma Gandhi Road,medium,medium,medium,1,1,0.8350
+520,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8550
+519,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+518,congestion,Strand Road,high,high,high,1,1,0.9175
+517,congestion,Council House Street,high,high,high,1,1,0.9175
+516,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+515,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+514,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+513,construction,NH19,low,low,low,1,1,0.7225
+512,congestion,NH12,high,high,high,1,1,0.8975
+511,congestion,Santra Gachi,medium,medium,medium,1,1,0.8550
+510,road_closure,Salt Lake City,medium,low,high,0,0,0.7925
+509,road_closure,Mukundapur,medium,low,high,0,0,0.7525
+508,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+507,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7525
+506,road_closure,Kabi Krishna Das Road,medium,low,high,0,0,0.7525
+505,road_closure,5th Lane,low,low,high,1,0,0.7225
+504,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+503,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+502,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+501,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+500,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+499,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7325
+498,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7325
+497,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+496,road_closure,Umakanta Sen Lane,low,low,high,1,0,0.7325
+495,road_closure,8 No Birpara Lane,low,low,high,1,0,0.7225
+494,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+493,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+492,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+491,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+490,congestion,Mahatma Gandhi Road,high,high,high,1,1,0.9175
+489,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+488,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+487,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+486,congestion,NH12,high,high,high,1,1,0.8975
+485,construction,NH19,low,low,low,1,1,0.7225
+484,congestion,NH19,low,low,low,1,1,0.7725
+483,congestion,Dankuni,low,low,low,1,1,0.7925
+482,road_closure,NH19,low,low,medium,1,0,0.7525
+481,congestion,NH19,high,high,high,1,1,0.9175
+480,construction,NH19,low,low,low,1,1,0.7225
+479,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+478,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+477,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+476,construction,Street No 24,low,low,low,1,1,0.7725
+475,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+474,construction,NH19,low,low,low,1,1,0.7225
+473,congestion,NH12,low,low,low,1,1,0.7925
+472,congestion,Benaras Road / Chanditala Road,low,low,low,1,1,0.7925
+471,congestion,Bishwa Bangla Sarani,high,high,high,1,1,0.9175
+470,road_closure,Mukundapur,medium,low,high,0,0,0.7525
+469,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+468,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7525
+467,road_closure,Kabi Krishna Das Road,medium,low,high,0,0,0.7525
+466,road_closure,5th Lane,low,low,high,1,0,0.7225
+465,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+464,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+463,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+462,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+461,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+460,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7325
+459,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7325
+458,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+457,road_closure,8 No Birpara Lane,low,low,high,1,0,0.7225
+456,road_closure,Umakanta Sen Lane,low,low,high,1,0,0.7325
+455,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+454,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+453,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+452,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+451,congestion,Surya Sen Road,high,high,high,1,1,0.9175
+450,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+449,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+448,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+447,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+446,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+445,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+444,construction,NH19,low,low,low,1,1,0.7225
+443,congestion,NH19,high,high,high,1,1,0.8975
+442,construction,Street No 24,low,low,low,1,1,0.7725
+441,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+440,congestion,Mahatma Gandhi Road,high,high,high,1,1,0.9175
+439,congestion,Strand Road / Alipore Road,high,high,high,1,1,0.9175
+438,congestion,NH12,high,high,high,1,1,0.9175
+437,road_closure,NH19,low,low,medium,1,0,0.7525
+436,construction,NH19,low,low,low,1,1,0.7225
+435,construction,NH19,low,low,low,1,1,0.7225
+434,congestion,Rajarhat,high,high,high,1,1,0.9175
+433,congestion,Street No 240,high,high,high,1,1,0.9175
+432,construction,Street No 24,low,low,low,1,1,0.7725
+431,congestion,Bishwa Bangla Sarani,high,high,high,1,1,0.9175
+430,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+429,road_closure,Mukundapur,medium,low,high,0,0,0.7525
+428,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7525
+427,road_closure,Kabi Krishna Das Road,medium,low,high,0,0,0.7525
+426,road_closure,5th Lane,low,low,high,1,0,0.7225
+425,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+424,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+423,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+422,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+421,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+420,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7325
+419,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7325
+418,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+417,road_closure,Umakanta Sen Lane,low,low,high,1,0,0.7325
+416,road_closure,8 No Birpara Lane,low,low,high,1,0,0.7225
+415,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+414,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+413,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+412,congestion,Prasanna Naskar Lane,high,high,high,1,1,0.9175
+411,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+410,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+409,congestion,Colootola Street / Surya Sen Street,high,high,high,1,1,0.9175
+408,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+407,congestion,Bangabandhu Sheikh Mujibur Rahman Sarani,medium,medium,medium,1,1,0.8550
+406,congestion,Strand Road / Alipore Road,high,high,high,1,1,0.9175
+405,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+404,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+403,congestion,NH12,high,high,high,1,1,0.9175
+402,congestion,NH12,low,low,low,1,1,0.7925
+401,construction,NH19,low,low,low,1,1,0.7225
+400,congestion,NH19,high,high,high,1,1,0.8975
+399,congestion,NH12,low,low,low,1,1,0.7925
+398,road_closure,NH19,low,low,medium,1,0,0.7525
+397,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+396,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+395,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+394,construction,NH19,low,low,low,1,1,0.7225
+393,construction,NH19,low,low,low,1,1,0.7225
+392,congestion,AH45,low,low,low,1,1,0.7925
+391,congestion,Kazi Nazrul Islam Avenue / Airport Road,low,low,low,1,1,0.7925
+390,construction,Street No 24,low,low,low,1,1,0.7725
+389,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+388,road_closure,Mukundapur,medium,low,high,0,0,0.7525
+387,congestion,Lake Town Road,high,high,high,1,1,0.9175
+386,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7525
+385,road_closure,Kabi Krishna Das Road,medium,low,high,0,0,0.7525
+384,road_closure,5th Lane,low,low,high,1,0,0.7225
+383,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+382,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+381,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+380,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+379,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+378,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7325
+377,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7325
+376,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+375,road_closure,8 No Birpara Lane,low,low,high,1,0,0.7225
+374,road_closure,Umakanta Sen Lane,low,low,high,1,0,0.7325
+373,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+372,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+371,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+370,congestion,Prasanna Naskar Lane,high,high,high,1,1,0.9175
+369,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+368,congestion,SH2,medium,medium,medium,1,1,0.8550
+367,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+366,congestion,Mahatma Gandhi Road,high,high,high,1,1,0.9175
+365,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+364,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+363,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+362,congestion,NH12,high,high,high,1,1,0.9175
+361,congestion,Mandirtala Flyover,medium,medium,medium,1,1,0.8550
+360,congestion,NH12,high,high,high,1,1,0.9175
+359,construction,NH19,low,low,low,1,1,0.7225
+358,congestion,NH19,high,high,high,1,1,0.9175
+357,congestion,NH19,low,low,low,1,1,0.7925
+356,congestion,Dankuni,medium,medium,high,1,0,0.8550
+355,road_closure,NH19,low,low,medium,1,0,0.7525
+354,construction,NH19,low,low,low,1,1,0.7225
+353,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+352,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+351,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+350,construction,NH19,low,low,low,1,1,0.7225
+349,congestion,NH12,high,high,high,1,1,0.9175
+348,congestion,AH45,low,low,low,1,1,0.7925
+347,congestion,Major Arterial Road / Street No 326,high,high,high,1,1,0.9175
+346,construction,Street No 24,low,low,low,1,1,0.7725
+345,road_closure,Nayabad Main Road,medium,low,high,0,0,0.7325
+344,road_closure,Mukundapur,medium,low,high,0,0,0.7525
+343,road_closure,Kabi Krishna Das Road,medium,low,high,0,0,0.7525
+342,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7525
+341,road_closure,5th Lane,low,low,high,1,0,0.7225
+340,road_closure,Kalyani Bypass Road,medium,low,high,0,0,0.7225
+339,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+338,road_closure,Mukundapur,medium,low,high,0,0,0.7325
+337,road_closure,Darokanath Banerjee Road,medium,low,high,0,0,0.7225
+336,road_closure,Sahid Jahar Ghosh Sarani / R G Kar Road,medium,low,high,0,0,0.7225
+335,road_closure,H B Town 1 No Road,medium,low,medium,0,1,0.7325
+334,road_closure,Sodepur Barasat Road,medium,low,medium,0,1,0.7325
+333,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+332,road_closure,8 No Birpara Lane,low,low,high,1,0,0.7225
+331,road_closure,Umakanta Sen Lane,low,low,high,1,0,0.7325
+330,road_closure,Umesh Mukherjee Road,high,low,high,0,1,0.7225
+329,road_closure,Madhusudan Banerjee Road,high,low,high,0,1,0.7225
+328,road_closure,Barrackpore Trunk Road,high,low,high,0,1,0.7525
+327,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+326,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+325,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+324,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+323,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+322,congestion,Mandirtala Flyover,high,high,high,1,1,0.9175
+321,congestion,NH12,medium,medium,medium,1,1,0.8550
+320,congestion,NH19,high,high,high,1,1,0.9175
+319,congestion,NH19,low,low,low,1,1,0.7925
+318,congestion,NH12,medium,medium,medium,1,1,0.8550
+317,road_closure,NH19,low,low,medium,1,0,0.7525
+316,construction,NH19,low,low,low,1,1,0.7225
+315,construction,NH19,low,low,low,1,1,0.7225
+314,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7525
+313,road_closure,Taratala Road,medium,low,medium,0,1,0.7525
+312,congestion,AH45,high,high,high,1,1,0.9175
+311,congestion,NH12,high,high,high,1,1,0.9175
+310,road_closure,Garia Station Road,medium,low,high,0,0,0.7225
+309,congestion,NH12,high,high,high,1,1,0.9175
+308,congestion,Colootola Street / Surya Sen Street,high,high,high,1,1,0.9175
+307,congestion,Keshab Chandra Sen Street,high,high,high,1,1,0.9175
+306,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+305,congestion,NH12,low,low,low,1,1,0.7925
+304,congestion,NH19,low,low,low,1,1,0.7925
+303,congestion,NH12,medium,medium,medium,1,1,0.8550
+302,road_closure,Gurusaday Dutta Road,medium,low,high,0,0,0.7525
+301,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7525
+300,road_closure,Sarojini Naidu Sarani,medium,low,medium,0,1,0.7525
+299,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7525
+298,congestion,Wood Street / Martin Luther King Sarani,medium,medium,medium,1,1,0.8550
+297,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7525
+296,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7525
+295,road_closure,Abanindra Nath Tagore Sarani,medium,low,medium,0,1,0.7525
+294,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+293,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7525
+292,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+291,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+290,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+289,road_closure,Anandilal Poddar Sarani,medium,low,medium,0,1,0.7525
+288,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+287,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7525
+286,road_closure,Balaram Bose Ghat Road,low,low,medium,1,0,0.7525
+285,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7525
+284,congestion,Panna Lal Basak Lane,medium,medium,medium,1,1,0.8550
+283,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+282,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+281,congestion,Roy Bahadur Road,high,high,high,1,1,0.9175
+280,congestion,Ram Kamal Street,high,high,high,1,1,0.9175
+279,construction,Howrah Amta Road,low,low,low,1,1,0.7925
+278,congestion,Biradanga 2nd Lane,high,high,high,1,1,0.9175
+277,congestion,C T I Road,low,low,low,1,1,0.7925
+276,construction,NH19,low,low,low,1,1,0.7225
+275,congestion,Kona Bazar Road,medium,medium,medium,1,1,0.8550
+274,congestion,NH19,medium,medium,high,1,0,0.8550
+273,congestion,NH19,low,low,low,1,1,0.7725
+272,congestion,Dankuni,low,low,low,1,1,0.7925
+271,construction,NH19,low,low,low,1,1,0.7225
+270,congestion,AH45,high,high,high,1,1,0.9175
+269,road_closure,Taratala Road,medium,low,medium,0,1,0.7525
+268,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7525
+267,congestion,Dankuni,high,high,high,1,1,0.9175
+266,congestion,Bellilious Road / SH15,high,high,high,1,1,0.9175
+265,congestion,Old Court House Road / Nawab Seraj Ud Dualla Sarani,high,high,high,1,1,0.9175
+264,congestion,Strand Road,high,high,high,1,1,0.9175
+263,congestion,Strand Road,high,high,high,1,1,0.9175
+262,road_closure,Queens Way / Shakespeare Sarani,medium,low,medium,0,1,0.7525
+261,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7525
+260,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7525
+259,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+258,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+257,congestion,Rabindra Sarani,high,high,high,1,1,0.9175
+256,congestion,Surendra Nath Banerjee Road / Moti Sil Street,medium,medium,medium,1,1,0.8550
+255,congestion,AH45,high,high,high,1,1,0.9175
+254,congestion,SH6,low,low,low,1,1,0.7925
+253,congestion,NH16,high,high,high,1,1,0.9175
+252,road_closure,SH1,medium,low,medium,0,1,0.7525
+251,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+250,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+249,road_closure,Gurusaday Dutta Road,medium,low,high,0,0,0.7525
+248,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7525
+247,road_closure,Sarojini Naidu Sarani,medium,low,medium,0,1,0.7525
+246,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7525
+245,road_closure,Abanindra Nath Tagore Sarani,medium,low,medium,0,1,0.7525
+244,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+243,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+242,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+241,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+240,road_closure,Anandilal Poddar Sarani,medium,low,medium,0,1,0.7525
+239,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7325
+238,congestion,SH6,high,high,high,1,1,0.9175
+237,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7525
+236,road_closure,Balaram Bose Ghat Road,low,low,medium,1,0,0.7525
+235,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7525
+234,congestion,Amar Nath Road / Rajendra Avenue,medium,medium,high,1,0,0.8550
+233,congestion,Panna Lal Basak Lane,medium,medium,medium,1,1,0.8550
+232,construction,Dasrath Ghosh Lane,low,low,low,1,1,0.7525
+231,construction,Sitanath Bose Lane,low,low,low,1,1,0.7525
+230,congestion,Grand Trunk Road / Netaji Subhash Chandra Road,high,high,high,1,1,0.9175
+229,construction,Howrah Amta Road,low,low,low,1,1,0.7925
+228,congestion,Huboken Road,medium,medium,medium,1,1,0.8550
+227,congestion,C T I Road,high,high,high,1,1,0.9175
+226,construction,NH19,low,low,low,1,1,0.7225
+225,congestion,NH19,medium,medium,high,1,0,0.8350
+224,construction,NH19,low,low,low,1,1,0.7225
+223,congestion,Mohanpur Road,low,low,low,1,1,0.7925
+222,congestion,AH45,high,high,high,1,1,0.9175
+221,congestion,Durgapur Expressway,medium,medium,medium,1,1,0.8550
+220,road_closure,Karl Marx Sarani,medium,low,medium,0,1,0.7525
+219,road_closure,Taratala Road,medium,low,medium,0,1,0.7525
+218,congestion,Dankuni,high,high,high,1,1,0.9175
+217,congestion,Bellilious Road / SH15,high,high,high,1,1,0.9175
+216,congestion,Strand Road,high,high,high,1,1,0.9175
+215,congestion,Strand Road,high,high,high,1,1,0.9175
+214,road_closure,Queens Way / Shakespeare Sarani,medium,low,medium,0,1,0.7525
+213,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7525
+212,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7525
+211,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7525
+210,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7525
+209,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7525
+208,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7525
+207,congestion,Strand Road,low,low,low,1,1,0.7925
+206,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7525
+205,congestion,AH45,high,high,high,1,1,0.9175
+204,congestion,AH45,high,high,high,1,1,0.9175
+203,congestion,SH6,medium,medium,high,1,0,0.8550
+202,road_closure,Gurusaday Dutta Road,medium,low,high,0,0,0.7925
+201,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7925
+200,road_closure,Sarojini Naidu Sarani,medium,low,medium,0,1,0.7725
+199,congestion,Metcalf Lane,low,low,low,1,1,0.7925
+198,road_closure,Muzaffar Ahmed Street,medium,low,medium,0,1,0.7925
+197,road_closure,Royd Street,medium,low,medium,0,1,0.7925
+196,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+195,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+194,congestion,Mahatma Gandhi Road / Mullick Street,high,high,high,1,1,0.9175
+193,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+192,congestion,Nimtala Ghat Street,medium,medium,medium,1,1,0.8550
+191,congestion,Basak Street,low,low,low,1,1,0.7925
+190,congestion,Lal Bazar Street,high,high,high,1,1,0.9175
+189,congestion,Mr Bharat Ghat Road / Meer Bahar Ghat Street,high,high,high,1,1,0.9175
+188,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+187,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+186,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7225
+185,congestion,Maha Rana Pratap Sarani,low,low,low,1,1,0.7925
+184,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+183,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7525
+182,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+181,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+180,congestion,Fairlie Place,high,high,high,1,1,0.8975
+179,congestion,Outram Road / Park Street,high,high,high,1,1,0.9175
+178,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+177,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+176,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+175,construction,NH19,low,low,low,1,1,0.7225
+174,congestion,NH19,high,high,high,1,1,0.8975
+173,congestion,NH12,medium,medium,medium,1,1,0.8550
+172,congestion,Dankuni,low,low,low,1,1,0.7925
+171,congestion,NH12,high,high,high,1,1,0.9175
+170,congestion,NH19,high,high,high,1,1,0.9175
+169,road_closure,NH19,low,low,medium,1,0,0.7725
+168,construction,NH19,low,low,low,1,1,0.7225
+167,accident,Taratala Flyover,medium,medium,medium,1,1,0.7650
+166,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+165,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+164,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+163,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+162,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+161,congestion,Lenin Sarani,medium,medium,medium,1,1,0.8550
+160,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7925
+159,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+158,congestion,Netaji Subhash Road,low,low,low,1,1,0.7925
+157,congestion,Chittaranjan Avenue / Madan Street,medium,medium,medium,1,1,0.8550
+156,congestion,Chittaranjan Avenue,high,high,high,1,1,0.9175
+155,congestion,NH19,high,high,high,1,1,0.9175
+154,congestion,NH12,high,high,high,1,1,0.8975
+153,congestion,Santra Gachi,high,high,high,1,1,0.9175
+152,road_closure,Royd Street,medium,low,medium,0,1,0.7925
+151,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7925
+150,congestion,Chittaranjan Avenue / Madan Street,medium,medium,medium,1,1,0.8550
+149,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+148,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+147,congestion,Chittaranjan Avenue,high,high,high,1,1,0.9175
+146,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+145,congestion,Nimtala Ghat Street,high,high,high,1,1,0.9175
+144,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+143,congestion,Basak Street,low,low,low,1,1,0.7925
+142,congestion,Lal Bazar Street,high,high,high,1,1,0.9175
+141,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+140,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+139,congestion,Mr Bharat Ghat Road / Meer Bahar Ghat Street,medium,medium,medium,1,1,0.8550
+138,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+137,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7225
+136,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+135,congestion,Maha Rana Pratap Sarani,low,low,low,1,1,0.7925
+134,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+133,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7525
+132,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+131,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+130,congestion,Fairlie Place,high,high,high,1,1,0.8975
+129,congestion,Jawaharlal Nehru Road / Surendra Nath Banerjee Road,medium,medium,medium,1,1,0.8550
+128,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+127,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+126,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7725
+125,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+124,congestion,Hare Street,medium,medium,medium,1,1,0.8550
+123,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7725
+122,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+121,congestion,Rishi Bankim Chandra Road,medium,medium,medium,1,1,0.8550
+120,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+119,congestion,Bellilious Road,high,high,high,1,1,0.9175
+118,congestion,Natobar Paul Road,high,high,high,1,1,0.9175
+117,construction,NH19,low,low,low,1,1,0.7225
+116,congestion,NH19,high,high,high,1,1,0.8975
+115,congestion,NH19,low,low,low,1,1,0.7925
+114,congestion,Dankuni,low,low,low,1,1,0.7925
+113,congestion,NH12,low,low,low,1,1,0.7925
+112,congestion,Kona Expressway,low,low,low,1,1,0.7925
+111,road_closure,NH19,low,low,medium,1,0,0.7725
+110,construction,NH19,low,low,low,1,1,0.7225
+109,road_closure,Taratala Flyover,medium,medium,medium,1,1,0.7650
+108,congestion,Strand Road,medium,medium,medium,1,1,0.8550
+107,construction,NH19,low,low,low,1,1,0.7225
+106,congestion,NH12,high,high,high,1,1,0.8975
+105,congestion,Kali Krishna Tagore Street / Jadulal Mullick Road,low,low,low,1,1,0.7925
+104,congestion,Mahatma Gandhi Road / Mullick Street,high,high,high,1,1,0.9175
+103,congestion,Santra Gachi,medium,medium,medium,1,1,0.8550
+102,congestion,Lu Shun Sarani,medium,medium,medium,1,1,0.8550
+101,road_closure,Gurusaday Dutta Road,medium,low,high,0,0,0.7925
+100,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7925
+99,road_closure,Sarojini Naidu Sarani,medium,low,medium,0,1,0.7925
+98,congestion,Chittaranjan Avenue / Biptabi Ankul Chandra Street,high,high,high,1,1,0.9175
+97,road_closure,Muzaffar Ahmed Street,medium,low,medium,0,1,0.7925
+96,road_closure,Royd Street,medium,low,medium,0,1,0.7925
+95,congestion,Radha Bazar Lane / Sunyat Sen Street,medium,medium,medium,1,1,0.8550
+94,congestion,Ganesh Chandra Avenue / Temple Street,high,high,high,1,1,0.9175
+93,road_closure,Park Street / Rafi Ahmed Kidwai Road,medium,low,medium,0,1,0.7925
+92,congestion,Kali Krishna Tagore Street / Jadulal Mullick Road,low,low,low,1,1,0.7925
+91,congestion,Jorasanko,medium,medium,medium,1,1,0.8550
+90,congestion,Biplabi Rash Behari Bose Road / Biplabi Rashibhihari Road,low,low,low,1,1,0.7925
+89,road_closure,Sarat Bose Road,medium,low,medium,0,1,0.7925
+88,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+87,road_closure,Park Street / Official Jones Sarani,medium,low,medium,0,1,0.7925
+86,congestion,Radha Bazar Lane,medium,medium,medium,1,1,0.8550
+85,congestion,Basak Street,high,high,high,1,1,0.9175
+84,congestion,Maha Rana Pratap Sarani,high,high,high,1,1,0.9175
+83,congestion,Strand Road,high,high,high,1,1,0.9175
+82,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+81,congestion,Mr Bharat Ghat Road / Meer Bahar Ghat Street,medium,medium,medium,1,1,0.8550
+80,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7225
+79,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+78,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7525
+77,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+76,congestion,Government Place East Road / Strand Road,high,high,high,1,1,0.9175
+75,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+74,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+73,congestion,Strand Road,low,low,low,1,1,0.7925
+72,congestion,Fairlie Place,high,high,high,1,1,0.8975
+71,congestion,Raja Woodmount Street,high,high,high,1,1,0.9175
+70,road_closure,Dr Sisir Kumar Bose Sarani,medium,low,medium,0,1,0.7925
+69,road_closure,Gerasim Lebedev Sarani,medium,low,medium,0,1,0.7925
+68,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+67,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+66,road_closure,Beni Nandan Street,medium,low,medium,0,1,0.7925
+65,road_closure,Biplabi Ganesh Ghosh Sarani / Gurupada Halder Road,medium,low,medium,0,1,0.7925
+64,road_closure,Pranbananda Sarani,medium,low,medium,0,1,0.7925
+63,congestion,Natobar Paul Road,high,high,high,1,1,0.9175
+62,construction,NH19,low,low,low,1,1,0.7225
+61,congestion,NH19,high,high,high,1,1,0.8975
+60,congestion,NH19,medium,medium,high,1,0,0.8550
+59,congestion,NH12,medium,medium,medium,1,1,0.8550
+58,congestion,Kona Expressway,low,low,low,1,1,0.7925
+57,road_closure,NH19,low,low,medium,1,0,0.7725
+56,construction,NH19,low,low,low,1,1,0.7225
+55,road_closure,Taratala Flyover,medium,medium,medium,1,1,0.7650
+54,construction,NH19,low,low,low,1,1,0.7225
+53,congestion,NH12,high,high,high,1,1,0.8975
+52,congestion,Santra Gachi,low,low,low,1,1,0.7925
+51,road_closure,Sarojini Naidu Sarani,medium,low,medium,0,1,0.7925
+50,congestion,Butto Kristo Paul Avenue / Nimtala Ghat Street,low,low,low,1,1,0.7925
+49,congestion,Surendra Nath Banerjee Road,high,high,high,1,1,0.9175
+48,congestion,Rabindra Sarani,high,high,high,1,1,0.9175
+47,congestion,Biplabi Trailokya Maharaj Sarani,high,high,high,1,1,0.9175
+46,road_closure,Rafi Ahmed Kidwai Road / Martin Luther King Sarani,medium,low,high,0,0,0.7925
+45,congestion,Jorasanko,high,high,high,1,1,0.9175
+44,congestion,Maha Rana Pratap Sarani,medium,medium,medium,1,1,0.8550
+43,road_closure,Prafulla Chandra Sen Sarani,medium,low,medium,0,1,0.7925
+42,congestion,Abanindra Nath Tagore Sarani,medium,medium,medium,1,1,0.8550
+41,congestion,Belur,high,high,high,1,1,0.9175
+40,road_closure,Shakespeare Sarani,medium,low,medium,0,1,0.7925
+39,congestion,Rabindra Sarani / Sunyat Sen Street,low,low,low,1,1,0.7925
+38,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+37,congestion,Mr Bharat Ghat Road / Meer Bahar Ghat Street,medium,medium,medium,1,1,0.8550
+36,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7225
+35,road_closure,Lala Lajpat Rai Sarani,medium,low,medium,0,1,0.7225
+34,road_closure,Justice Chandra Madhab Road,medium,low,medium,0,1,0.7525
+33,road_closure,Pandit Madan Mohan Malaviya Sarani,medium,low,medium,0,1,0.7225
+32,congestion,Fairlie Place,high,high,high,1,1,0.8975
+31,congestion,Government Place East Road,low,low,low,1,1,0.7925
+30,congestion,Fairlie Place,medium,medium,medium,1,1,0.8550
+29,congestion,Tollygunge Road,high,high,high,1,1,0.9175
+28,congestion,Jyotish Roy Road,high,high,high,1,1,0.9175
+27,congestion,Bankim Mukherjee Sarani,high,high,high,1,1,0.9175
+26,congestion,Ullaskar Datta Sarani,medium,medium,medium,1,1,0.8550
+25,construction,NH19,low,low,low,1,1,0.7225
+24,congestion,NH19,high,high,high,1,1,0.9175
+23,road_closure,NH19,low,low,medium,1,0,0.7925
+22,construction,NH19,low,low,low,1,1,0.7225
+21,construction,NH19,low,low,low,1,1,0.7225
+20,congestion,NH12,medium,medium,medium,1,1,0.8550
+19,accident,Taratala Flyover,medium,medium,medium,1,1,0.7200
+18,congestion,BBD Bag South Road / Council House Street,high,high,high,1,1,0.9175
+17,congestion,Old China Bazar Street,medium,medium,medium,1,1,0.8550
+16,congestion,Strand Road,low,low,low,1,1,0.7925
+15,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+14,congestion,Netaji Subhash Road,high,high,high,1,1,0.9175
+13,congestion,Strand Road,high,high,high,1,1,0.9175
+12,congestion,Council House Street / Gonernment Place North Road,high,high,high,1,1,0.9175
+11,road_closure,Abanindra Nath Tagore Sarani,medium,low,medium,0,1,0.7925
+10,road_closure,Jawaharlal Nehru Road,medium,low,medium,0,1,0.7925
+9,congestion,Chittaranjan Avenue / Madan Street,medium,medium,medium,1,1,0.8550
+8,congestion,Netaji Subhash Road,low,low,low,1,1,0.7925
+7,congestion,Bipin Pal Road / Sarat Bose Road,high,high,high,1,1,0.9175
+6,road_closure,Queens Way / Shakespeare Sarani,medium,low,medium,0,1,0.7925
+5,road_closure,Acharya Jagadish Chandra Bose Road,medium,low,medium,0,1,0.7925
+4,road_closure,Sambhunath Pandit Street,medium,low,medium,0,1,0.7925
+3,congestion,AH45,medium,medium,high,1,0,0.8550
+2,congestion,Budg Budg Trunk Road,medium,medium,medium,1,1,0.8550
+1,congestion,Nangi Railway Station Road,high,high,high,1,1,0.9175

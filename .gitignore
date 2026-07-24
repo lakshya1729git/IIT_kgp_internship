@@ -64,3 +64,4 @@ app/hgnn/weights/*.pt
 app/hgnn/weights/*.pth
 
 docs/Copy of abstract-template_future_mobility_conference_iitkgp.pdf
+docs/
