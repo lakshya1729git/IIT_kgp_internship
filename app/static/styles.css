@@ -45,12 +45,12 @@ html, body {
   width: 340px;
   background: rgba(255,255,255,.97);
   backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 16px 16px 14px;
+  border-radius: 16px;
+  padding: 12px 12px 10px;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 4px 6px rgba(60,64,67,.10), 0 12px 36px rgba(60,64,67,.16);
   border: 1px solid rgba(0,0,0,.06);
   pointer-events: auto;
@@ -72,45 +72,102 @@ html, body {
 }
 
 /* ==================================================
-   MODE CHIPS  — multi-select toggles
+   MODE CHIPS  — row 1: 3 chips, row 2: metro+bus full-width
+================================================== */
+/* ==================================================
+   MODE CHIPS
 ================================================== */
 
 .mode-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+/* First row: 3 equal buttons */
+.mode-chip:nth-child(1),
+.mode-chip:nth-child(2),
+.mode-chip:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* Second row: 2 equal buttons */
+.mode-chip:nth-child(4) {
+  grid-column: 1 / span 3;
+}
+
+.mode-chip:nth-child(5) {
+  grid-column: 4 / span 3;
 }
 
 .mode-chip {
+  min-width: 0;
+  width: auto;
+
   height: 30px;
   border: 1.5px solid #dadce0;
   border-radius: 20px;
   background: #fff;
   color: #5f6368;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  padding: 0 11px;
+  padding: 0 10px;
   white-space: nowrap;
-  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  transition:
+    background .15s,
+    color .15s,
+    border-color .15s,
+    box-shadow .15s;
+
   user-select: none;
 }
+
 .mode-chip:hover {
   background: #f0f6ff;
   border-color: #aecbfa;
   color: #1a73e8;
 }
+
 .mode-chip.active {
   background: #e8f0fe;
   border-color: #1a73e8;
   color: #1a73e8;
   box-shadow: 0 1px 3px rgba(26,115,232,.18);
 }
-.mode-chip.active[data-mode="walk"]  { background: #e6f4ea; border-color: #1e8e3e; color: #1e8e3e; box-shadow: 0 1px 3px rgba(30,142,62,.15); }
-.mode-chip.active[data-mode="bike"]  { background: #fef7e0; border-color: #e37400; color: #e37400; box-shadow: 0 1px 3px rgba(227,116,0,.15); }
-.mode-chip.active[data-mode="metro"] { background: #ede7f6; border-color: #7c4dff; color: #7c4dff; box-shadow: 0 1px 3px rgba(124,77,255,.15); }
-.mode-chip.active[data-mode="bus"]   { background: #fce8e6; border-color: #c5221f; color: #c5221f; box-shadow: 0 1px 3px rgba(197,34,31,.15); }
+
+.mode-chip.active[data-mode="walk"] {
+  background: #e6f4ea;
+  border-color: #1e8e3e;
+  color: #1e8e3e;
+}
+
+.mode-chip.active[data-mode="bike"] {
+  background: #fef7e0;
+  border-color: #e37400;
+  color: #e37400;
+}
+
+.mode-chip.active[data-mode="metro"] {
+  background: #ede7f6;
+  border-color: #7c4dff;
+  color: #7c4dff;
+}
+
+.mode-chip.active[data-mode="bus"] {
+  background: #fce8e6;
+  border-color: #c5221f;
+  color: #c5221f;
+}
 
 /* Hint line showing resolved mode label */
 .mode-hint {

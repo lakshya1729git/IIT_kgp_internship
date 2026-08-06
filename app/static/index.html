@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="/static/styles.css?v=10" />
+  <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
 
@@ -27,11 +27,11 @@
 
         <!-- Mode chips — multi-select toggles -->
         <div class="mode-chips" id="mode-chips">
-          <button class="mode-chip active" data-mode="drive" onclick="toggleMode('drive')" title="Drive">🚗 Drive</button>
-          <button class="mode-chip"        data-mode="walk"  onclick="toggleMode('walk')"  title="Walk">🚶 Walk</button>
-          <button class="mode-chip"        data-mode="bike"  onclick="toggleMode('bike')"  title="Bike">🚲 Bike</button>
-          <button class="mode-chip"        data-mode="metro" onclick="toggleMode('metro')" title="Metro">🚇 Metro</button>
-          <button class="mode-chip"        data-mode="bus"   onclick="toggleMode('bus')"   title="Bus">🚌 Bus</button>
+            <button class="mode-chip active" data-mode="drive" onclick="toggleMode('drive')" title="Drive">🚗 Drive</button>
+            <button class="mode-chip"        data-mode="walk"  onclick="toggleMode('walk')"  title="Walk">🚶 Walk</button>
+            <button class="mode-chip"        data-mode="bike"  onclick="toggleMode('bike')"  title="Bike">🚲 Bike</button>
+            <button class="mode-chip" data-mode="metro" onclick="toggleMode('metro')" title="Metro">🚇 Metro</button>
+            <button class="mode-chip" data-mode="bus"   onclick="toggleMode('bus')"   title="Bus">🚌 Bus</button>
         </div>
         <!-- Active mode label -->
         <div class="mode-hint" id="mode-hint">Mode: Drive</div>
