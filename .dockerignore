@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Dev / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Secrets — never bake into image
+.env
+
+# Logs
+*.log
+logs/
+
+# Test / research artefacts
+TRB_2025/
+*.pdf
+*.bst
+*.bib
+*.cls
+*.tex
+
+# Build artefacts
+.dist/
+app.zip
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Docs
+docs/
+
+# OSMnx query-level JSON caches (re-generated automatically; large & stale)
+app/cache/*.json
+
+# HGNN weights — not required (system falls back to rule-based scoring)
+# app/hgnn/weights/*.pt  ← uncomment to exclude if you don't have a trained model
+
+# DB (created fresh at startup by init_db())
+app/*.db
+app/*.sqlite
+app/*.sqlite3
+
+# README
+README.md
+CONTRIBUTING.md

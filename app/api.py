@@ -21,8 +21,10 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -56,7 +58,14 @@ from weather.route_weather import fetch_weather as _fetch_weather_point
 from weather.weather_risk import compute_weather_risk
 from hgnn.integration import enhance_event_confidences, score_route_with_hgnn, get_cascade_road_names
 
-app = FastAPI(title="Kolkata Traffic AI", version="2.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── startup ───────────────────────────────────────────────────────────────
+    init_db()
+    yield
+    # ── shutdown (nothing to clean up) ────────────────────────────────────────
+
+app = FastAPI(title="Kolkata Traffic AI", version="2.0", lifespan=lifespan)
 
 # ── Forward-geocode cache — used to fill lat/lon for non-TomTom events ────────
 # Nominatim calls are expensive (~1s each). We cache by location string so the
@@ -900,13 +909,6 @@ def _pick_best_route(scored: list[dict]) -> int:
 
     return min(range(len(scored)), key=lambda i: composite(scored[i]))
 
-# ── Startup ────────────────────────────────────────────────────────────────────
-
-@app.on_event("startup")
-async def startup():
-    init_db()
-
-
 # ── Endpoints ──────────────────────────────────────────────────────────────────
 
 @app.get("/api/locations")
@@ -1428,3 +1430,11 @@ def frontend():
     html_path = os.path.join(os.path.dirname(__file__), "static", "index.html")
     with open(html_path, encoding="utf-8") as f:
         return f.read()
+
+
+# ── Health check ───────────────────────────────────────────────────────────────
+# Used by Render (render.yaml healthCheckPath) to confirm the server is up.
+
+@app.get("/health", include_in_schema=False)
+def health():
+    return JSONResponse({"status": "ok"})

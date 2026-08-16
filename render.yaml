@@ -1,0 +1,73 @@
+services:
+  - type: web
+    name: traffic-ai
+    runtime: docker
+    # Render builds from the Dockerfile at repo root
+    dockerfilePath: ./Dockerfile
+    # Free tier — shared CPU, 512 MB RAM
+    plan: free
+
+    # Environment variables — set secret values in Render dashboard
+    # (Dashboard → Environment → Add Environment Variable)
+    envVars:
+      # ── Required: at least one LLM key ────────────────────────────────────
+      - key: LLM_BACKEND
+        value: openrouter          # or "gemini" / "ollama"
+
+      - key: OPENROUTER_API_KEY
+        sync: false                # set in dashboard — never commit the value
+
+      - key: GEMINI_API_KEY
+        sync: false                # fallback LLM
+
+      # ── Recommended: live traffic data ────────────────────────────────────
+      - key: TOMTOM_API_KEY
+        sync: false
+
+      - key: OPENWEATHER_API_KEY
+        sync: false
+
+      - key: NEWS_API_KEY
+        sync: false
+
+      # ── Routing & app settings ─────────────────────────────────────────────
+      - key: DEFAULT_CITY
+        value: Kolkata, India
+
+      - key: MAX_ROUTES
+        value: "5"                 # keep low on free tier (512 MB RAM)
+
+      - key: MIN_ROUTE_DIVERGENCE
+        value: "0.20"
+
+      # ── Database — use /data (persistent disk mount point) ─────────────────
+      - key: DATABASE_URL
+        value: sqlite:////data/traffic_events.db
+
+      # ── Graph cache path — baked into image at /app/cache/ ────────────────
+      - key: GRAPH_CACHE_PATH
+        value: /app/cache/graph.pkl
+
+      # ── Source toggles — disable expensive sources to stay within free limits
+      - key: ENABLE_TOMTOM
+        value: "true"
+      - key: ENABLE_WEATHER
+        value: "true"
+      - key: ENABLE_SCRAPER
+        value: "true"
+      - key: ENABLE_NEWSAPI
+        value: "true"
+      - key: ENABLE_RSS
+        value: "true"
+      - key: ENABLE_NOMINATIM
+        value: "true"
+
+    # Persistent disk — keeps SQLite DB across deploys and restarts
+    # Free tier includes 1 GB persistent disk
+    disk:
+      name: traffic-ai-data
+      mountPath: /data
+      sizeGB: 1
+
+    # Health check — Render uses this to know when the app is ready
+    healthCheckPath: /health
